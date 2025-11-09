@@ -1,0 +1,13 @@
+admin: {
+  "success": true,
+  "message": "Administrador creado exitosamente",
+  "data": {
+    "user": {
+      "id_usuario": 14,
+      "email": "nelson@simicro.com",
+      "nombre": "Admin general",
+      "rol": "admin"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxNCwiZW1haWwiOiJuZWxzb25Ac2ltaWNyby5jb20iLCJyb2wiOiJhZG1pbiIsImlhdCI6MTc2MjcwOTAwOSwiZXhwIjoxNzYzMzEzODA5fQ.tW0xfPPaTLvVXr2Gf_X2FiYuhIRnOWiQ9jPyuQdD0GU"
+  }
+}
