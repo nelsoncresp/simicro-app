@@ -1,0 +1,91 @@
+<div class="dashboard-admin">
+  <div class="header">
+    <h1>Dashboard Administrador</h1>
+    <p>Resumen general del sistema</p>
+  </div>
+
+  <!-- Estadísticas principales -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-info">
+        <h3>{{ dashboardData?.totalUsuarios || '0' }}</h3>
+        <p>Total Usuarios</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-info">
+        <h3>{{ dashboardData?.totalCreditos || '0' }}</h3>
+        <p>Créditos Totales</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-info">
+        <h3>{{ dashboardData?.creditosActivos || '0' }}</h3>
+        <p>Créditos Activos</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">💵</div>
+      <div class="stat-info">
+        <h3>${{ dashboardData?.montoTotal?.toLocaleString() || '0' }}</h3>
+        <p>Monto Total</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Secciones adicionales -->
+  <div class="sections-grid">
+    <div class="section-card">
+      <h3>📈 Actividad Reciente</h3>
+      <div class="activity-list">
+        <div class="activity-item" *ngFor="let activity of dashboardData?.actividadReciente || []">
+          <span class="activity-desc">{{ activity.descripcion }}</span>
+          <span class="activity-time">{{ activity.timestamp | date:'short' }}</span>
+        </div>
+        <div *ngIf="!(dashboardData?.actividadReciente?.length)" class="no-data">
+          No hay actividad reciente
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3>🚨 Alertas</h3>
+      <div class="alerts-list">
+        <div class="alert-item warning" *ngIf="dashboardData?.solicitudesPendientes > 0">
+          <span>{{ dashboardData.solicitudesPendientes }} solicitudes pendientes</span>
+        </div>
+        <div class="alert-item info" *ngIf="dashboardData?.pagosVencidos > 0">
+          <span>{{ dashboardData.pagosVencidos }} pagos vencidos</span>
+        </div>
+        <div *ngIf="!(dashboardData?.solicitudesPendientes > 0) && !(dashboardData?.pagosVencidos > 0)" class="no-data">
+          No hay alertas
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Métricas detalladas -->
+  <div class="metrics-section">
+    <h3>Métricas Detalladas</h3>
+    <div class="metrics-grid">
+      <div class="metric-item">
+        <span class="metric-label">Tasa de Aprobación</span>
+        <span class="metric-value">{{ dashboardData?.tasaAprobacion || '0' }}%</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-label">Usuarios Activos</span>
+        <span class="metric-value">{{ dashboardData?.usuariosActivos || '0' }}</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-label">Ingresos Mensuales</span>
+        <span class="metric-value">${{ dashboardData?.ingresosMensuales?.toLocaleString() || '0' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

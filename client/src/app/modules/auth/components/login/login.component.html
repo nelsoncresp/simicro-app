@@ -1,0 +1,63 @@
+<!-- src/app/modules/auth/components/login/login.component.html -->
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h1>SEMICRO</h1>
+            <p>Sistema de Microcréditos</p>
+        </div>
+
+        <h2>Iniciar Sesión</h2>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" formControlName="email" placeholder="tu@email.com"
+                    [class.error]="email?.invalid && email?.touched">
+                <div class="error-message" *ngIf="email?.invalid && email?.touched">
+                    <span *ngIf="email?.errors?.['required']">El email es requerido</span>
+                    <span *ngIf="email?.errors?.['email']">Ingresa un email válido</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" formControlName="password" placeholder="••••••••"
+                    [class.error]="password?.invalid && password?.touched">
+                <div class="error-message" *ngIf="password?.invalid && password?.touched">
+                    <span *ngIf="password?.errors?.['required']">La contraseña es requerida</span>
+                </div>
+            </div>
+
+            <!-- Mensaje de error general -->
+            <div class="error-message general-error" *ngIf="errorMessage">
+                ⚠️ {{ errorMessage }}
+            </div>
+
+            <button type="submit" class="btn-primary" [disabled]="isLoading">
+                <span *ngIf="!isLoading">Ingresar</span>
+                <span *ngIf="isLoading">Cargando...</span>
+            </button>
+        </form>
+
+        <div class="login-footer">
+            <p>¿No tienes cuenta?
+                <a routerLink="/auth/register" class="link">Regístrate aquí</a>
+            </p>
+        </div>
+
+        <!-- Solo para desarrollo - credenciales de prueba -->
+        <div class="demo-credentials" *ngIf="!errorMessage.includes('conectar')">
+            <h4>Credenciales de Prueba:</h4>
+            <!-- En tu login.component.html - línea 69 -->
+            <div class="credential-item">
+                <strong>Admin:</strong> admin&#64;simicro.com / admin123
+            </div>
+            <div class="credential-item">
+                <strong>Analista:</strong> analista&#64;simicro.com / analista123
+            </div>
+            <div class="credential-item">
+                <strong>Emprendedor:</strong> emprendedor&#64;ejemplo.com / password123
+            </div>
+        </div>
+    </div>
+</div>

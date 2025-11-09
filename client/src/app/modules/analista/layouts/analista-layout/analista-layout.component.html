@@ -1,0 +1,27 @@
+<!-- src/app/modules/analista/layouts/analista-layout/analista-layout.component.html -->
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h2>Analista</h2>
+      <p>{{ user()?.nombre }}</p>
+    </div>
+    
+    <ul class="sidebar-menu">
+      @for (item of menuItems; track item.path) {
+        <li>
+          <!-- Usar routerLink sin corchetes si son rutas relativas -->
+          <a [routerLink]="item.path" routerLinkActive="active">
+            <span class="icon">{{ item.icon }}</span>
+            {{ item.label }}
+          </a>
+        </li>
+      }
+    </ul>
+    
+    <button (click)="logout()" class="logout-btn">Cerrar Sesión</button>
+  </nav>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

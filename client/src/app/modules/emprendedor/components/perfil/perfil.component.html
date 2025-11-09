@@ -1,0 +1,33 @@
+<!-- src/app/modules/emprendedor/components/perfil/perfil.component.html -->
+<div class="perfil">
+  <h1>Mi Perfil</h1>
+  
+  <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
+    <div class="form-group">
+      <label>Nombre Completo</label>
+      <input type="text" formControlName="name" required>
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" formControlName="email" required>
+    </div>
+
+    <div class="form-group">
+      <label>Teléfono</label>
+      <input type="tel" formControlName="phone">
+    </div>
+
+    <div class="form-group">
+      <label>Empresa</label>
+      <input type="text" formControlName="business">
+    </div>
+
+    <div class="form-group">
+      <label>Sector</label>
+      <input type="text" formControlName="sector">
+    </div>
+
+    <button type="submit" class="btn-primary">Guardar Cambios</button>
+  </form>
+</div>

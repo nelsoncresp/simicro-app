@@ -1,0 +1,22 @@
+<!-- src/app/modules/emprendedor/components/dashboard/dashboard.component.html -->
+<div class="dashboard">
+  <h1>Dashboard Emprendedor</h1>
+  
+  <div class="stats-grid">
+    <!-- CORREGIDO: usando @for -->
+    @for (stat of stats; track stat.title) {
+      <div class="stat-card">
+        <div class="stat-icon">{{ stat.icon }}</div>
+        <div class="stat-info">
+          <h3>{{ stat.value }}</h3>
+          <p>{{ stat.title }}</p>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="recent-activity">
+    <h2>Actividad Reciente</h2>
+    <p>Aquí irá el historial de tus solicitudes...</p>
+  </div>
+</div>
