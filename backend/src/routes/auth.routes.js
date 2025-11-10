@@ -1,6 +1,6 @@
-import { Router } from 'express';
-import { AuthController } from '../controllers/authController.js';
-import { authenticate, requireAdmin } from '../middleware/auth.js';
+import { Router } from "express";
+import { AuthController } from "../controllers/authController.js";
+import { authenticate, requireAdmin } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -56,7 +56,7 @@ const router = Router();
  *       401:
  *         description: Credenciales incorrectas
  */
-router.post('/login', AuthController.login);
+router.post("/login", AuthController.login);
 
 /**
  * @swagger
@@ -99,14 +99,14 @@ router.post('/login', AuthController.login);
  *       400:
  *         description: El usuario ya existe o datos inválidos
  */
-router.post('/register', AuthController.register);
+router.post("/register", AuthController.register);
 
 /**
  * @swagger
  * /api/auth/profile:
  *   get:
  *     summary: Obtener perfil del usuario autenticado
- *     tags: [Authentication]
+ *     tags: [Profile]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -115,7 +115,7 @@ router.post('/register', AuthController.register);
  *       401:
  *         description: No autenticado
  */
-router.get('/profile', authenticate, AuthController.getProfile);
+router.get("/profile", authenticate, AuthController.getProfile);
 
 /**
  * @swagger
@@ -150,6 +150,93 @@ router.get('/profile', authenticate, AuthController.getProfile);
  *       403:
  *         description: No tiene permisos de administrador
  */
-router.post('/create-admin', authenticate, requireAdmin, AuthController.createAdmin);
+router.post(
+  "/create-admin",
+  authenticate,
+  requireAdmin,
+  AuthController.createAdmin
+);
+
+/**
+ * @swagger
+ * /api/auth/create-analyst:
+ *   post:
+ *     summary: Crea un nuevo usuario con rol de analista
+ *     description: Solo los administradores pueden crear analistas. Requiere un token JWT válido con rol **admin**.
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *               - nombre
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: analista1@empresa.com
+ *               password:
+ *                 type: string
+ *                 example: 123456
+ *               nombre:
+ *                 type: string
+ *                 example: Analista Principal
+ *     responses:
+ *       201:
+ *         description: Analista creado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Analista creado exitosamente
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id_usuario:
+ *                           type: integer
+ *                           example: 5
+ *                         email:
+ *                           type: string
+ *                           example: analista1@empresa.com
+ *                         nombre:
+ *                           type: string
+ *                           example: Analista Principal
+ *                         rol:
+ *                           type: string
+ *                           example: analista
+ *                     token:
+ *                       type: string
+ *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       400:
+ *         description: Datos incompletos o inválidos
+ *       401:
+ *         description: Token no válido o no proporcionado
+ *       403:
+ *         description: El usuario autenticado no tiene permisos de administrador
+ *       409:
+ *         description: El email ya está registrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.post(
+  "/create-analyst",
+  authenticate,
+  requireAdmin,
+  AuthController.createAnalyst
+);
 
 export default router;
