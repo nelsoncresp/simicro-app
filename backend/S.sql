@@ -1,4 +1,10 @@
--- backend/src/database/migrations/001_create_usuarios_table.sql
+-- Crear base de datos y usarla
+CREATE DATABASE IF NOT EXISTS simicro_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE simicro_db;
+
+-- =========================================================
+-- 001 - Tabla de usuarios
+-- =========================================================
 CREATE TABLE usuarios (
     id_usuario INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100) NOT NULL,
@@ -10,21 +16,9 @@ CREATE TABLE usuarios (
     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- backend/src/database/migrations/002_create_emprendedores_table.sql
-CREATE TABLE emprendedores (
-    id_emprendedor INT PRIMARY KEY AUTO_INCREMENT,
-    id_usuario INT NOT NULL,
-    nombre_negocio VARCHAR(255) NOT NULL,
-    antiguedad_meses INT NOT NULL,
-    ingreso_neto_diario DECIMAL(10,2) NOT NULL,
-    estabilidad_vivienda ENUM('propia', 'alquilada', 'familiar') NOT NULL,
-    telefono VARCHAR(20),
-    direccion TEXT,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
-);
-
-------------- NEW TABLE
+-- =========================================================
+-- 002 - Detalle de usuarios (información personal general)
+-- =========================================================
 CREATE TABLE detalle_usuarios (
     id_detalle_usuario INT PRIMARY KEY AUTO_INCREMENT,
     id_usuario INT NOT NULL,
@@ -44,8 +38,44 @@ CREATE TABLE detalle_usuarios (
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
 );
 
+-- =========================================================
+-- 003 - Detalle de emprendedores (información del negocio)
+-- =========================================================
+CREATE TABLE emprendedores (
+    id_emprendedor INT PRIMARY KEY AUTO_INCREMENT, -- CORREGIDO: nombre de campo coherente
+    id_usuario INT NOT NULL,
+    
+    -- 💼 Información del negocio
+    nombre_negocio VARCHAR(255) NOT NULL,
+    descripcion_negocio TEXT,
+    sector_economico ENUM('comercio', 'servicios', 'manufactura', 'agricultura', 'transporte', 'otro') DEFAULT 'otro',
+    tipo_negocio ENUM('formal', 'informal') DEFAULT 'informal',
+    antiguedad_meses INT NOT NULL,
+    numero_empleados INT DEFAULT 0,
+    
+    -- 💰 Información financiera
+    ingreso_neto_mensual DECIMAL(12,2) NOT NULL,
+    egresos_mensuales DECIMAL(12,2) DEFAULT 0.00,
+    utilidad_promedio_mensual DECIMAL(12,2) GENERATED ALWAYS AS (ingreso_neto_mensual - egresos_mensuales) STORED,
+    
+    -- 🏠 Vivienda / estabilidad
+    tipo_vivienda ENUM('propia', 'alquilada', 'familiar', 'otra') DEFAULT 'otra',
+    tiempo_residencia_anios INT DEFAULT 0,
+    estabilidad_vivienda ENUM('alta', 'media', 'baja') DEFAULT 'media',
+    
+    -- 📈 Riesgo y observaciones
+    calificacion_riesgo ENUM('bajo', 'medio', 'alto') DEFAULT 'medio',
+    observaciones TEXT,
+    
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+);
 
--- backend/src/database/migrations/003_create_solicitudes_table.sql
+-- =========================================================
+-- 004 - Solicitudes de microcrédito
+-- =========================================================
 CREATE TABLE solicitudes (
     id_solicitud INT PRIMARY KEY AUTO_INCREMENT,
     id_emprendedor INT NOT NULL,
@@ -57,12 +87,13 @@ CREATE TABLE solicitudes (
     motivo_decision TEXT,
     fecha_solicitud TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
     FOREIGN KEY (id_emprendedor) REFERENCES emprendedores(id_emprendedor) ON DELETE CASCADE
 );
 
-
-
--- backend/src/database/migrations/004_create_creditos_table.sql
+-- =========================================================
+-- 005 - Créditos (una vez aprobada la solicitud)
+-- =========================================================
 CREATE TABLE creditos (
     id_credito INT PRIMARY KEY AUTO_INCREMENT,
     id_solicitud INT NOT NULL,
@@ -73,10 +104,13 @@ CREATE TABLE creditos (
     fecha_vencimiento DATE NULL,
     estado ENUM('activo', 'pagado', 'moroso', 'cancelado') DEFAULT 'activo',
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
     FOREIGN KEY (id_solicitud) REFERENCES solicitudes(id_solicitud) ON DELETE CASCADE
 );
 
--- backend/src/database/migrations/005_create_cuotas_table.sql
+-- =========================================================
+-- 006 - Cuotas del crédito
+-- =========================================================
 CREATE TABLE cuotas (
     id_cuota INT PRIMARY KEY AUTO_INCREMENT,
     id_credito INT NOT NULL,
@@ -89,10 +123,13 @@ CREATE TABLE cuotas (
     fecha_pago TIMESTAMP NULL,
     monto_pagado DECIMAL(10,2) DEFAULT 0,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
     FOREIGN KEY (id_credito) REFERENCES creditos(id_credito) ON DELETE CASCADE
 );
 
--- backend/src/database/migrations/006_create_moras_table.sql
+-- =========================================================
+-- 007 - Moras (cuotas vencidas)
+-- =========================================================
 CREATE TABLE moras (
     id_mora INT PRIMARY KEY AUTO_INCREMENT,
     id_cuota INT NOT NULL,
@@ -102,10 +139,13 @@ CREATE TABLE moras (
     fecha_fin_mora DATE NULL,
     estado ENUM('activa', 'liquidada') DEFAULT 'activa',
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
     FOREIGN KEY (id_cuota) REFERENCES cuotas(id_cuota) ON DELETE CASCADE
 );
 
--- backend/src/database/migrations/007_create_pagos_table.sql
+-- =========================================================
+-- 008 - Pagos realizados
+-- =========================================================
 CREATE TABLE pagos (
     id_pago INT PRIMARY KEY AUTO_INCREMENT,
     id_cuota INT NOT NULL,
@@ -114,5 +154,6 @@ CREATE TABLE pagos (
     metodo_pago ENUM('efectivo', 'transferencia', 'tarjeta') DEFAULT 'efectivo',
     referencia_pago VARCHAR(100),
     observaciones TEXT,
+    
     FOREIGN KEY (id_cuota) REFERENCES cuotas(id_cuota) ON DELETE CASCADE
 );

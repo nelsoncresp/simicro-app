@@ -1,41 +1,54 @@
 import pool from '../config/database.js';
 
 export class Emprendedor {
-  // Crear emprendedor - VERSIÓN CORREGIDA
-  static async create(emprendedorData) {
-    // Convertir undefined a null para MySQL
+  static async create(data) {
     const {
-      id_usuario, 
-      nombre_negocio, 
-      antiguedad_meses = 0, 
-      ingreso_neto_diario = 0, 
-      estabilidad_vivienda = 'familiar',
-      telefono = null,
-      direccion = null
-    } = emprendedorData;
-    
+      id_usuario,
+      nombre_negocio,
+      descripcion_negocio,
+      sector_economico,
+      tipo_negocio,
+      antiguedad_meses,
+      numero_empleados,
+      ingreso_neto_mensual,
+      egresos_mensuales,
+      tipo_vivienda,
+      tiempo_residencia_anios,
+      estabilidad_vivienda,
+      calificacion_riesgo,
+      observaciones
+    } = data;
+
     const [result] = await pool.execute(
-      `INSERT INTO emprendedores 
-      (id_usuario, nombre_negocio, antiguedad_meses, ingreso_neto_diario, estabilidad_vivienda, telefono, direccion) 
-      VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO emprendedores (
+        id_usuario, nombre_negocio, descripcion_negocio, sector_economico, tipo_negocio,
+        antiguedad_meses, numero_empleados, ingreso_neto_mensual, egresos_mensuales,
+        tipo_vivienda, tiempo_residencia_anios, estabilidad_vivienda, calificacion_riesgo, observaciones
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        id_usuario, 
-        nombre_negocio, 
-        antiguedad_meses, 
-        ingreso_neto_diario, 
-        estabilidad_vivienda, 
-        telefono, 
-        direccion
+        id_usuario,
+        nombre_negocio,
+        descripcion_negocio,
+        sector_economico,
+        tipo_negocio,
+        antiguedad_meses,
+        numero_empleados,
+        ingreso_neto_mensual,
+        egresos_mensuales,
+        tipo_vivienda,
+        tiempo_residencia_anios,
+        estabilidad_vivienda,
+        calificacion_riesgo,
+        observaciones
       ]
     );
-    
+
     return this.findById(result.insertId);
   }
 
-  // Buscar por ID
   static async findById(id) {
     const [rows] = await pool.execute(
-      `SELECT e.*, u.email, u.nombre as nombre_completo 
+      `SELECT e.*, u.email, u.nombre AS nombre_completo 
        FROM emprendedores e 
        INNER JOIN usuarios u ON e.id_usuario = u.id_usuario 
        WHERE e.id_emprendedor = ?`,
@@ -44,10 +57,9 @@ export class Emprendedor {
     return rows[0];
   }
 
-  // Buscar por ID de usuario
   static async findByUserId(userId) {
     const [rows] = await pool.execute(
-      `SELECT e.*, u.email, u.nombre as nombre_completo 
+      `SELECT e.*, u.email, u.nombre AS nombre_completo 
        FROM emprendedores e 
        INNER JOIN usuarios u ON e.id_usuario = u.id_usuario 
        WHERE e.id_usuario = ?`,
@@ -56,10 +68,9 @@ export class Emprendedor {
     return rows[0];
   }
 
-  // Obtener todos los emprendedores
   static async findAll() {
     const [rows] = await pool.execute(
-      `SELECT e.*, u.email, u.nombre as nombre_completo 
+      `SELECT e.*, u.email, u.nombre AS nombre_completo 
        FROM emprendedores e 
        INNER JOIN usuarios u ON e.id_usuario = u.id_usuario 
        ORDER BY e.fecha_creacion DESC`
@@ -67,22 +78,23 @@ export class Emprendedor {
     return rows;
   }
 
-  // Actualizar emprendedor
-  static async update(id, emprendedorData) {
+  static async update(id, data) {
     const fields = [];
     const values = [];
 
-    Object.keys(emprendedorData).forEach(key => {
-      if (emprendedorData[key] !== undefined) {
+    for (const [key, value] of Object.entries(data)) {
+      if (value !== undefined) {
         fields.push(`${key} = ?`);
-        values.push(emprendedorData[key]);
+        values.push(value);
       }
-    });
+    }
+
+    if (!fields.length) return this.findById(id);
 
     values.push(id);
 
     await pool.execute(
-      `UPDATE emprendedores SET ${fields.join(', ')} WHERE id_emprendedor = ?`,
+      `UPDATE emprendedores SET ${fields.join(', ')}, fecha_actualizacion = CURRENT_TIMESTAMP WHERE id_emprendedor = ?`,
       values
     );
 

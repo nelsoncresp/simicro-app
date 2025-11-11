@@ -2,13 +2,13 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { lastValueFrom, Observable, tap } from 'rxjs';
 
 export interface User {
-  id_usuario: number;    // Cambiado de id
+  id_usuario: number; // Cambiado de id
   email: string;
-  rol: 'admin' | 'analista' | 'emprendedor';  // Cambiado de role
-  nombre: string;        // Cambiado de name
+  rol: 'admin' | 'analista' | 'emprendedor'; // Cambiado de role
+  nombre: string; // Cambiado de name
 }
 
 interface LoginResponse {
@@ -21,7 +21,7 @@ interface LoginResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private currentUserSignal = signal<User | null>(null);
@@ -38,9 +38,10 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password })
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password })
       .pipe(
-        tap(response => {
+        tap((response) => {
           if (response.success && response.data) {
             // Mapear la estructura del backend al frontend si es necesario
             const user = response.data.user;
@@ -54,6 +55,11 @@ export class AuthService {
 
   register(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/register`, userData);
+  }
+
+  postRegister(userData: any): Promise<any> {
+    const a = this.http.post(`${this.apiUrl}/auth/register`, userData);
+    return lastValueFrom(a);
   }
 
   getProfile(): Observable<any> {
@@ -75,8 +81,8 @@ export class AuthService {
     const token = localStorage.getItem('token');
     return {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     };
   }
 }

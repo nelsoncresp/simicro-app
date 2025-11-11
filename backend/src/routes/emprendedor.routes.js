@@ -1,153 +1,27 @@
-import { Router } from 'express';
+import express from 'express';
 import { EmprendedorController } from '../controllers/emprendedorController.js';
-import { authenticate } from '../middleware/auth.js';
-import { requireAdminOrAnalyst } from '../middleware/role.js';
+import { authenticate, requireAdminOrAnalyst } from '../middleware/auth.js';
 
-const router = Router();
+const router = express.Router();
 
+// 🔒 Todas las rutas requieren estar autenticado
 router.use(authenticate);
-router.use(requireAdminOrAnalyst); // Solo admin y analistas
+
+/**
+ * @swagger
+ * tags:
+ *   name: Emprendedores
+ *   description: Gestión de perfiles de emprendedores
+ */
 
 /**
  * @swagger
  * /api/emprendedores:
- *   get:
- *     summary: Obtener lista de emprendedores (Admin y Analistas)
+ *   post:
+ *     summary: Crear un nuevo perfil de emprendedor (solo rol emprendedor)
  *     tags: [Emprendedores]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *         description: Número de página para paginación
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *         description: Límite de resultados por página
- *       - in: query
- *         name: estado
- *         schema:
- *           type: string
- *           enum: [activo, inactivo, pendiente]
- *         description: Filtrar por estado
- *     responses:
- *       200:
- *         description: Lista de emprendedores obtenida exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                       nombre:
- *                         type: string
- *                       email:
- *                         type: string
- *                       telefono:
- *                         type: string
- *                       empresa:
- *                         type: string
- *                       estado:
- *                         type: string
- *                         enum: [activo, inactivo, pendiente]
- *                 pagination:
- *                   type: object
- *                   properties:
- *                     page:
- *                       type: integer
- *                     limit:
- *                       type: integer
- *                     total:
- *                       type: integer
- *       403:
- *         description: No autorizado - Se requiere rol de admin o analista
- */
-router.get('/', EmprendedorController.obtenerEmprendedores);
-
-/**
- * @swagger
- * /api/emprendedores/{id}:
- *   get:
- *     summary: Obtener un emprendedor específico por ID (Admin y Analistas)
- *     tags: [Emprendedores]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID del emprendedor
- *     responses:
- *       200:
- *         description: Datos del emprendedor
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     nombre:
- *                       type: string
- *                     email:
- *                       type: string
- *                     telefono:
- *                       type: string
- *                     empresa:
- *                       type: string
- *                     direccion:
- *                       type: string
- *                     sector:
- *                       type: string
- *                     estado:
- *                       type: string
- *                     fechaRegistro:
- *                       type: string
- *                       format: date-time
- *                     creditos:
- *                       type: array
- *                       items:
- *                         type: object
- *       404:
- *         description: Emprendedor no encontrado
- */
-router.get('/:id', EmprendedorController.obtenerEmprendedor);
-
-/**
- * @swagger
- * /api/emprendedores/{id}:
- *   put:
- *     summary: Actualizar información de un emprendedor (Admin y Analistas)
- *     tags: [Emprendedores]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID del emprendedor a actualizar
  *     requestBody:
  *       required: true
  *       content:
@@ -155,54 +29,112 @@ router.get('/:id', EmprendedorController.obtenerEmprendedor);
  *           schema:
  *             type: object
  *             properties:
- *               nombre:
+ *               nombre_negocio:
  *                 type: string
- *                 example: "Juan Pérez Updated"
- *               telefono:
+ *               descripcion_negocio:
  *                 type: string
- *                 example: "+1234567890"
- *               empresa:
+ *               sector_economico:
  *                 type: string
- *                 example: "Mi Empresa Actualizada S.A."
- *               direccion:
+ *                 enum: [comercio, servicios, manufactura, agricultura, transporte, otro]
+ *               tipo_negocio:
  *                 type: string
- *                 example: "Nueva dirección 123"
- *               sector:
+ *                 enum: [formal, informal]
+ *               antiguedad_meses:
+ *                 type: integer
+ *               numero_empleados:
+ *                 type: integer
+ *               ingreso_neto_mensual:
+ *                 type: number
+ *               egresos_mensuales:
+ *                 type: number
+ *               tipo_vivienda:
  *                 type: string
- *                 example: "Tecnología"
- *               estado:
+ *                 enum: [propia, alquilada, familiar, otra]
+ *               tiempo_residencia_anios:
+ *                 type: integer
+ *               estabilidad_vivienda:
  *                 type: string
- *                 enum: [activo, inactivo, pendiente]
- *                 example: "activo"
+ *                 enum: [alta, media, baja]
+ *               calificacion_riesgo:
+ *                 type: string
+ *                 enum: [bajo, medio, alto]
+ *               observaciones:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Perfil de emprendedor creado
+ *       400:
+ *         description: Error de validación o datos incompletos
+ */
+router.post('/', EmprendedorController.crearEmprendedor);
+
+/**
+ * @swagger
+ * /api/emprendedores:
+ *   get:
+ *     summary: Obtener todos los emprendedores (solo admin/analista)
+ *     tags: [Emprendedores]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Emprendedor actualizado exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     nombre:
- *                       type: string
- *                     email:
- *                       type: string
- *                     empresa:
- *                       type: string
- *                     estado:
- *                       type: string
- *       404:
- *         description: Emprendedor no encontrado
- *       400:
- *         description: Datos de actualización inválidos
+ *         description: Lista de emprendedores
  */
-router.put('/:id', EmprendedorController.actualizarEmprendedor);
+router.get('/', requireAdminOrAnalyst, EmprendedorController.obtenerEmprendedores);
+
+/**
+ * @swagger
+ * /api/emprendedores/{id}:
+ *   get:
+ *     summary: Obtener un emprendedor por ID (solo admin/analista)
+ *     tags: [Emprendedores]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Datos del emprendedor
+ */
+router.get('/:id', requireAdminOrAnalyst, EmprendedorController.obtenerEmprendedor);
+
+/**
+ * @swagger
+ * /api/emprendedores/{id}:
+ *   put:
+ *     summary: Actualizar un emprendedor (solo admin/analista)
+ *     tags: [Emprendedores]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre_negocio:
+ *                 type: string
+ *               ingreso_neto_mensual:
+ *                 type: number
+ *               numero_empleados:
+ *                 type: integer
+ *               observaciones:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Emprendedor actualizado correctamente
+ */
+router.put('/:id', requireAdminOrAnalyst, EmprendedorController.actualizarEmprendedor);
 
 export default router;

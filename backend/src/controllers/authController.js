@@ -9,6 +9,7 @@ export class AuthController {
     try {
       const { email, password } = req.body;
 
+      console.log(!email,!password)
       // Validaciones básicas
       if (!email || !password) {
         return error(res, "Email y contraseña son requeridos", 400);
@@ -127,16 +128,6 @@ export class AuthController {
         rol: "analista",
       });
 
-      // Generar token JWT
-      const token = jwt.sign(
-        {
-          id_usuario: user.id_usuario,
-          email: user.email,
-          rol: user.rol,
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
-      );
 
       const userData = {
         id_usuario: user.id_usuario,
@@ -147,7 +138,7 @@ export class AuthController {
 
       success(
         res,
-        { user: userData, token },
+        { user: userData},
         "Analista creado exitosamente",
         201
       );

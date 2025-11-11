@@ -1,46 +1,65 @@
 import { Emprendedor } from '../models/Emprendedor.js';
-import { success, error } from '../utils/responses.js';
+import { EmprendedorService } from '../services/emprendedorService.js';
 
 export class EmprendedorController {
-  // Obtener todos los emprendedores
-  static async obtenerEmprendedores(req, res) {
+  static async crearEmprendedor(req, res) {
     try {
-      const emprendedores = await Emprendedor.findAll();
-      success(res, emprendedores, 'Emprendedores obtenidos');
-    } catch (err) {
-      console.error('Error obteniendo emprendedores:', err);
-      error(res, 'Error obteniendo emprendedores', 500);
+      const { id_usuario, rol } = req.user;
+      console.log(req.user)
+
+      if (rol !== 'emprendedor') {
+        return res.status(403).json({ message: 'Solo los usuarios con rol emprendedor pueden crear su perfil.' });
+      }
+
+      const existente = await Emprendedor.findByUserId(id_usuario);
+      if (existente) {
+        return res.status(400).json({ message: 'El usuario ya tiene un perfil de emprendedor.' });
+      }
+
+      // 🔹 Validar y normalizar datos
+      const datosValidados = EmprendedorService.validarDatosEmprendedor({
+        id_usuario,
+        ...req.body
+      });
+
+      const nuevo = await Emprendedor.create(datosValidados);
+      res.status(201).json(nuevo);
+
+    } catch (error) {
+      console.error('Error creando emprendedor:', error.message);
+      res.status(400).json({ message: error.message });
     }
   }
 
-  // Obtener emprendedor por ID
+  static async obtenerEmprendedores(req, res) {
+    try {
+      const emprendedores = await Emprendedor.findAll();
+      res.json(emprendedores);
+    } catch (error) {
+      res.status(500).json({ message: 'Error al obtener los emprendedores' });
+    }
+  }
+
   static async obtenerEmprendedor(req, res) {
     try {
       const { id } = req.params;
       const emprendedor = await Emprendedor.findById(id);
-
       if (!emprendedor) {
-        return error(res, 'Emprendedor no encontrado', 404);
+        return res.status(404).json({ message: 'Emprendedor no encontrado' });
       }
-
-      success(res, emprendedor, 'Emprendedor obtenido');
-    } catch (err) {
-      console.error('Error obteniendo emprendedor:', err);
-      error(res, 'Error obteniendo emprendedor', 500);
+      res.json(emprendedor);
+    } catch (error) {
+      res.status(500).json({ message: 'Error al obtener emprendedor' });
     }
   }
 
-  // Actualizar emprendedor
   static async actualizarEmprendedor(req, res) {
     try {
       const { id } = req.params;
-      const updateData = req.body;
-
-      const emprendedor = await Emprendedor.update(id, updateData);
-      success(res, emprendedor, 'Emprendedor actualizado');
-    } catch (err) {
-      console.error('Error actualizando emprendedor:', err);
-      error(res, 'Error actualizando emprendedor', 500);
+      const actualizado = await Emprendedor.update(id, req.body);
+      res.json(actualizado);
+    } catch (error) {
+      res.status(500).json({ message: 'Error al actualizar emprendedor' });
     }
   }
 }
