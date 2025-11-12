@@ -1,3 +1,4 @@
+// routes/solicitud.routes.js
 import { Router } from 'express';
 import { SolicitudController } from '../controllers/solicitudController.js';
 import { authenticate } from '../middleware/auth.js';
@@ -12,7 +13,7 @@ router.use(authenticate);
  * @swagger
  * /api/solicitudes:
  *   post:
- *     summary: Crear nueva solicitud de crédito (Admin y Analistas)
+ *     summary: Crear una nueva solicitud de crédito (Usuario autenticado)
  *     tags: [Solicitudes]
  *     security:
  *       - bearerAuth: []
@@ -23,40 +24,31 @@ router.use(authenticate);
  *           schema:
  *             type: object
  *             required:
- *               - idEmprendedor
- *               - montoSolicitado
- *               - proposito
+ *               - monto_solicitado
+ *               - plazo_semanas
  *             properties:
- *               idEmprendedor:
- *                 type: integer
- *                 description: ID del emprendedor solicitante
- *               montoSolicitado:
+ *               monto_solicitado:
  *                 type: number
  *                 format: float
  *                 description: Monto solicitado del crédito
- *               proposito:
- *                 type: string
- *                 description: Propósito del crédito
- *               plazoMeses:
+ *               plazo_semanas:
  *                 type: integer
- *                 description: Plazo en meses (opcional)
- *               tasaInteres:
- *                 type: number
- *                 format: float
- *                 description: Tasa de interés (opcional)
+ *                 description: Plazo del crédito en semanas
  *     responses:
  *       201:
- *         description: Solicitud creada exitosamente
+ *         description: Solicitud creada exitosamente o evaluada (pre-aprobada/rechazada)
  *       400:
- *         description: Datos de la solicitud inválidos
+ *         description: Datos inválidos o incompletos
+ *       401:
+ *         description: Usuario no autenticado
  */
-router.post('/', requireAdminOrAnalyst, SolicitudController.crearSolicitud);
+router.post('/', SolicitudController.crearSolicitud);
 
 /**
  * @swagger
  * /api/solicitudes:
  *   get:
- *     summary: Obtener lista de solicitudes (Admin y Analistas)
+ *     summary: Obtener lista de todas las solicitudes (solo Admin y Analistas)
  *     tags: [Solicitudes]
  *     security:
  *       - bearerAuth: []
@@ -65,29 +57,42 @@ router.post('/', requireAdminOrAnalyst, SolicitudController.crearSolicitud);
  *         name: estado
  *         schema:
  *           type: string
- *           enum: [pendiente, aprobada, rechazada, revisión]
- *         description: Filtrar por estado de solicitud
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *         description: Número de página
+ *           enum: [pendiente, pre-aprobado, aprobado, rechazado, activo]
+ *         description: Filtrar por estado de la solicitud
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Límite de resultados por página
+ *         description: Límite de resultados
  *     responses:
  *       200:
  *         description: Lista de solicitudes obtenida exitosamente
+ *       403:
+ *         description: No autorizado - requiere rol de admin o analista
  */
 router.get('/', requireAdminOrAnalyst, SolicitudController.obtenerSolicitudes);
 
 /**
  * @swagger
+ * /api/solicitudes/mis-solicitudes:
+ *   get:
+ *     summary: Obtener todas las solicitudes del usuario autenticado
+ *     tags: [Solicitudes]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de solicitudes del usuario autenticado
+ *       401:
+ *         description: Usuario no autenticado
+ */
+router.get('/mis-solicitudes', SolicitudController.obtenerSolicitudesUsuario);
+
+/**
+ * @swagger
  * /api/solicitudes/{id}:
  *   get:
- *     summary: Obtener una solicitud específica (Admin y Analistas)
+ *     summary: Obtener una solicitud específica (solo Admin y Analistas)
  *     tags: [Solicitudes]
  *     security:
  *       - bearerAuth: []
@@ -100,9 +105,11 @@ router.get('/', requireAdminOrAnalyst, SolicitudController.obtenerSolicitudes);
  *         description: ID de la solicitud
  *     responses:
  *       200:
- *         description: Datos de la solicitud
+ *         description: Datos de la solicitud obtenidos exitosamente
  *       404:
  *         description: Solicitud no encontrada
+ *       403:
+ *         description: No autorizado - requiere rol de admin o analista
  */
 router.get('/:id', requireAdminOrAnalyst, SolicitudController.obtenerSolicitud);
 
@@ -110,7 +117,7 @@ router.get('/:id', requireAdminOrAnalyst, SolicitudController.obtenerSolicitud);
  * @swagger
  * /api/solicitudes/{id}/decision:
  *   patch:
- *     summary: Aprobar o rechazar una solicitud (Solo Administradores)
+ *     summary: Aprobar o rechazar una solicitud (solo Administradores)
  *     tags: [Solicitudes]
  *     security:
  *       - bearerAuth: []
@@ -128,24 +135,19 @@ router.get('/:id', requireAdminOrAnalyst, SolicitudController.obtenerSolicitud);
  *           schema:
  *             type: object
  *             required:
- *               - decision
- *               - comentarios
+ *               - accion
  *             properties:
- *               decision:
+ *               accion:
  *                 type: string
- *                 enum: [aprobada, rechazada]
- *                 description: Decisión sobre la solicitud
- *               comentarios:
- *                 type: string
- *                 description: Comentarios sobre la decisión
- *               montoAprobado:
- *                 type: number
- *                 description: Monto aprobado (si aplica)
+ *                 enum: [aprobar, rechazar]
+ *                 description: Acción a ejecutar sobre la solicitud
  *     responses:
  *       200:
- *         description: Decisión aplicada exitosamente
+ *         description: Solicitud actualizada exitosamente (aprobada o rechazada)
+ *       400:
+ *         description: Solo se pueden decidir solicitudes pre-aprobadas
  *       403:
- *         description: No autorizado - Se requiere rol de administrador
+ *         description: No autorizado - requiere rol de administrador
  *       404:
  *         description: Solicitud no encontrada
  */
