@@ -31,7 +31,6 @@ CREATE TABLE detalle_usuarios (
     municipio VARCHAR(100),
     departamento VARCHAR(100),
     estado_civil ENUM('soltero', 'casado', 'union_libre', 'divorciado', 'viudo') DEFAULT 'soltero',
-    nivel_educativo ENUM('ninguno', 'primaria', 'secundaria', 'tecnico', 'profesional', 'posgrado') DEFAULT 'ninguno',
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
@@ -41,37 +40,27 @@ CREATE TABLE detalle_usuarios (
 -- =========================================================
 -- 003 - Detalle de emprendedores (información del negocio)
 -- =========================================================
-CREATE TABLE emprendedores (
-    id_emprendedor INT PRIMARY KEY AUTO_INCREMENT, -- CORREGIDO: nombre de campo coherente
-    id_usuario INT NOT NULL,
-    
-    -- 💼 Información del negocio
-    nombre_negocio VARCHAR(255) NOT NULL,
-    descripcion_negocio TEXT,
-    sector_economico ENUM('comercio', 'servicios', 'manufactura', 'agricultura', 'transporte', 'otro') DEFAULT 'otro',
-    tipo_negocio ENUM('formal', 'informal') DEFAULT 'informal',
-    antiguedad_meses INT NOT NULL,
-    numero_empleados INT DEFAULT 0,
-    
-    -- 💰 Información financiera
-    ingreso_neto_mensual DECIMAL(12,2) NOT NULL,
-    egresos_mensuales DECIMAL(12,2) DEFAULT 0.00,
-    utilidad_promedio_mensual DECIMAL(12,2) GENERATED ALWAYS AS (ingreso_neto_mensual - egresos_mensuales) STORED,
-    
-    -- 🏠 Vivienda / estabilidad
-    tipo_vivienda ENUM('propia', 'alquilada', 'familiar', 'otra') DEFAULT 'otra',
-    tiempo_residencia_anios INT DEFAULT 0,
-    estabilidad_vivienda ENUM('alta', 'media', 'baja') DEFAULT 'media',
-    
-    -- 📈 Riesgo y observaciones
-    calificacion_riesgo ENUM('bajo', 'medio', 'alto') DEFAULT 'medio',
-    observaciones TEXT,
-    
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+CREATE TABLE emprendimientos (
+  id_emprendimiento INT AUTO_INCREMENT PRIMARY KEY,
+  id_usuario INT,
+  nombre_emprendimiento VARCHAR(100),
+  sector_economico VARCHAR(50),
+  ubicacion_negocio VARCHAR(100),
+  tiempo_funcionamiento VARCHAR(30),
+  tipo_local VARCHAR(30),
+  numero_trabajadores INT,
+  ingresos_mensuales DECIMAL(12,2),
+  gastos_mensuales DECIMAL(12,2),
+  utilidad_neta DECIMAL(12,2) GENERATED ALWAYS AS (ingresos_mensuales - gastos_mensuales) STORED,
+  productos_servicios TEXT,
+  canales_venta VARCHAR(100),
+  frecuencia_ventas VARCHAR(20),
+  apoyo_familiar VARCHAR(100),
+  nivel_educativo VARCHAR(50),
+  fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
+
 
 -- =========================================================
 -- 004 - Solicitudes de microcrédito

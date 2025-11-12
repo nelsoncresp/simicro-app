@@ -1,5 +1,6 @@
+// routes/emprendimientos.routes.js
 import express from 'express';
-import { EmprendedorController } from '../controllers/emprendedorController.js';
+import { EmprendimientoController } from '../controllers/emprendedorController.js';
 import { authenticate, requireAdminOrAnalyst } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -10,16 +11,16 @@ router.use(authenticate);
 /**
  * @swagger
  * tags:
- *   name: Emprendedores
- *   description: Gestión de perfiles de emprendedores
+ *   name: Emprendimientos
+ *   description: Gestión de perfiles de emprendimientos
  */
 
 /**
  * @swagger
- * /api/emprendedores:
+ * /api/emprendimientos:
  *   post:
- *     summary: Crear un nuevo perfil de emprendedor (solo rol emprendedor)
- *     tags: [Emprendedores]
+ *     summary: Crear un nuevo emprendimiento (solo rol emprendedor y uno por usuario)
+ *     tags: [Emprendimientos]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -28,113 +29,83 @@ router.use(authenticate);
  *         application/json:
  *           schema:
  *             type: object
+ *             required: [nombre_emprendimiento, ingresos_mensuales, gastos_mensuales]
  *             properties:
- *               nombre_negocio:
- *                 type: string
- *               descripcion_negocio:
- *                 type: string
- *               sector_economico:
- *                 type: string
- *                 enum: [comercio, servicios, manufactura, agricultura, transporte, otro]
- *               tipo_negocio:
- *                 type: string
- *                 enum: [formal, informal]
- *               antiguedad_meses:
- *                 type: integer
- *               numero_empleados:
- *                 type: integer
- *               ingreso_neto_mensual:
- *                 type: number
- *               egresos_mensuales:
- *                 type: number
- *               tipo_vivienda:
- *                 type: string
- *                 enum: [propia, alquilada, familiar, otra]
- *               tiempo_residencia_anios:
- *                 type: integer
- *               estabilidad_vivienda:
- *                 type: string
- *                 enum: [alta, media, baja]
- *               calificacion_riesgo:
- *                 type: string
- *                 enum: [bajo, medio, alto]
- *               observaciones:
- *                 type: string
+ *               nombre_emprendimiento: { type: string }
+ *               sector_economico:     { type: string, example: "comercio" }
+ *               ubicacion_negocio:    { type: string }
+ *               tiempo_funcionamiento:{ type: string, example: "2 años" }
+ *               tipo_local:           { type: string, example: "propio | alquilado | a domicilio" }
+ *               numero_trabajadores:  { type: integer, minimum: 0 }
+ *               ingresos_mensuales:   { type: number, format: double }
+ *               gastos_mensuales:     { type: number, format: double }
+ *               productos_servicios:  { type: string }
+ *               canales_venta:        { type: string, example: "presencial, online, redes" }
+ *               frecuencia_ventas:    { type: string, example: "diaria | semanal | mensual" }
+ *               apoyo_familiar:       { type: string }
+ *               nivel_educativo:      { type: string, example: "secundaria | técnica | profesional" }
  *     responses:
- *       201:
- *         description: Perfil de emprendedor creado
- *       400:
- *         description: Error de validación o datos incompletos
+ *       201: { description: Emprendimiento creado }
+ *       400: { description: Error de validación o datos incompletos }
+ *       403: { description: Solo rol emprendedor }
  */
-router.post('/', EmprendedorController.crearEmprendedor);
+router.post('/', EmprendimientoController.crear);
 
 /**
  * @swagger
- * /api/emprendedores:
+ * /api/emprendimientos:
  *   get:
- *     summary: Obtener todos los emprendedores (solo admin/analista)
- *     tags: [Emprendedores]
+ *     summary: Obtener todos los emprendimientos (solo admin/analista)
+ *     tags: [Emprendimientos]
  *     security:
  *       - bearerAuth: []
  *     responses:
- *       200:
- *         description: Lista de emprendedores
+ *       200: { description: Lista de emprendimientos }
  */
-router.get('/', requireAdminOrAnalyst, EmprendedorController.obtenerEmprendedores);
+router.get('/', requireAdminOrAnalyst, EmprendimientoController.listar);
 
 /**
  * @swagger
- * /api/emprendedores/{id}:
+ * /api/emprendimientos/{id}:
  *   get:
- *     summary: Obtener un emprendedor por ID (solo admin/analista)
- *     tags: [Emprendedores]
+ *     summary: Obtener un emprendimiento por ID (solo admin/analista)
+ *     tags: [Emprendimientos]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
+ *         schema: { type: integer }
  *     responses:
- *       200:
- *         description: Datos del emprendedor
+ *       200: { description: Datos del emprendimiento }
+ *       404: { description: No encontrado }
  */
-router.get('/:id', requireAdminOrAnalyst, EmprendedorController.obtenerEmprendedor);
+router.get('/:id', requireAdminOrAnalyst, EmprendimientoController.obtener);
 
 /**
  * @swagger
- * /api/emprendedores/{id}:
+ * /api/emprendimientos/{id}:
  *   put:
- *     summary: Actualizar un emprendedor (solo admin/analista)
- *     tags: [Emprendedores]
+ *     summary: Actualizar un emprendimiento (solo admin/analista)
+ *     tags: [Emprendimientos]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
+ *         schema: { type: integer }
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             properties:
- *               nombre_negocio:
- *                 type: string
- *               ingreso_neto_mensual:
- *                 type: number
- *               numero_empleados:
- *                 type: integer
- *               observaciones:
- *                 type: string
+ *             description: Campos a actualizar (no enviar utilidad_neta)
  *     responses:
- *       200:
- *         description: Emprendedor actualizado correctamente
+ *       200: { description: Emprendimiento actualizado }
  */
-router.put('/:id', requireAdminOrAnalyst, EmprendedorController.actualizarEmprendedor);
+router.put('/:id', requireAdminOrAnalyst, EmprendimientoController.actualizar);
 
 export default router;

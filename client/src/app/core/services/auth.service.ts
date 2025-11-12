@@ -2,7 +2,8 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { lastValueFrom, Observable, tap } from 'rxjs';
+import { last, lastValueFrom, Observable, tap } from 'rxjs';
+import { RegisterData } from '../../interfaces/auth/registerData.interface';
 
 export interface User {
   id_usuario: number; // Cambiado de id
@@ -53,13 +54,12 @@ export class AuthService {
       );
   }
 
-  register(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/register`, userData);
-  }
-
-  postRegister(userData: any): Promise<any> {
-    const a = this.http.post(`${this.apiUrl}/auth/register`, userData);
-    return lastValueFrom(a);
+  // register(userData: any): Observable<any> {
+  //   return this.http.post(`${this.apiUrl}/auth/register`, userData);
+  // }
+  postRegister(register: RegisterData): Promise<RegisterData> {
+    const rg = this.http.post<RegisterData>(`${this.apiUrl}/auth/register`, register);
+    return lastValueFrom(rg);
   }
 
   getProfile(): Observable<any> {

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth.service';
-import { RegisterData } from '../../../../shared/interfaces/registerData.interface';
+import { RegisterData } from '../../../../interfaces/auth/registerData.interface';
 
 @Component({
   selector: 'app-register',
@@ -19,7 +19,7 @@ export class RegisterComponent {
   private authService = inject(AuthService);
 
   registerForm = this.fb.group({
-    name: ['', Validators.required],
+    nombre: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     role: ['emprendedor', Validators.required],
@@ -30,36 +30,41 @@ export class RegisterComponent {
       nombre: this.registerForm.get('name')?.value || '',
       email: this.registerForm.get('email')?.value || '',
       password: this.registerForm.get('password')?.value || '',
-      rol: this.registerForm.get('role')?.value || '',
+      role: this.registerForm.get('role')?.value || '',
     };
     return registerData;
   }
 
-  onSubmit(): void {
-    if (this.registerForm.valid) {
-      this.authService.register(this.registerForm.value).subscribe({
-        next: (response: any) => {
-          console.log('Registro exitoso:', response);
-          this.router.navigate([`/${response.user.role}`]);
-        },
-        error: (error: any) => {
-          console.error('Error de registro:', error);
-        },
-      });
-    }
+  mapearAObjetoRegistro(): RegisterData {
+    return {
+      nombre: this.registerForm.get('nombre')?.value || '',
+      email: this.registerForm.get('email')?.value || '',
+      password: this.registerForm.get('password')?.value || '',
+      role: this.registerForm.get('role')?.value || 'emprendedor'
+    };
   }
 
   async register() {
-    if (this.registerForm.valid) {
-      const registerData = this.mapearAObjetoRegisterData();
-      console.log('Datos de registro mapeados:', JSON.stringify(registerData));
-      try {
-        const response = await this.authService.postRegister(registerData);
-        console.log('Registro exitoso:', response);
-        this.router.navigate([`/${response.user.role}`]);
-      } catch (error) {
-        console.error('Error during registration:', error);
-      }
+    const registerData: RegisterData = this.mapearAObjetoRegistro();
+    try {
+      const response = await this.authService.postRegister(registerData);
+      this.router.navigate([`/login}`]);
+      console.log('Registro exitoso:', response);
+    } catch (error) {
+      console.log('Error en el registro:', error);
     }
   }
+
+  // onSubmit(): void {
+  //   if (this.registerForm.valid) {
+  //     this.authService.register(this.registerForm.value).subscribe({
+  //       next: (response: any) => {
+  //         this.router.navigate([`/${response.user.role}`]);
+  //       },
+  //       error: (error: any) => {
+  //         console.error('Error de registro:', error);
+  //       }
+  //     });
+  //   }
+  // }
 }

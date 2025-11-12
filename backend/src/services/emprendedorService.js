@@ -1,59 +1,86 @@
-// services/emprendedorService.js
-
-export const EmprendedorService = {
-  validarDatosEmprendedor(data) {
+// services/emprendimientoService.js
+export const EmprendimientoService = {
+  validarPayload(data) {
     const {
       id_usuario,
-      nombre_negocio,
-      antiguedad_meses,
-      ingreso_neto_mensual,
-      sector_economico = 'otro',
-      tipo_negocio = 'informal',
-      tipo_vivienda = 'otra',
-      estabilidad_vivienda = 'media',
-      calificacion_riesgo = 'medio'
+      nombre_emprendimiento,
+      ingresos_mensuales,
+      gastos_mensuales,
+      numero_trabajadores,
     } = data;
 
-    // Campos obligatorios
-    if (!id_usuario) throw new Error('El campo id_usuario es obligatorio.');
-    if (!nombre_negocio) throw new Error('El campo nombre_negocio es obligatorio.');
-    if (antiguedad_meses == null || isNaN(antiguedad_meses))
-      throw new Error('El campo antiguedad_meses es obligatorio y debe ser numérico.');
-    if (ingreso_neto_mensual == null || isNaN(ingreso_neto_mensual))
-      throw new Error('El campo ingreso_neto_mensual es obligatorio y debe ser numérico.');
+    if (!id_usuario) throw new Error('El campo id_usuario es obligatorio (viene del token).');
+    if (!nombre_emprendimiento) throw new Error('El campo nombre_emprendimiento es obligatorio.');
 
-    // Enums válidos
-    const ENUMS = {
-      sector_economico: ['comercio', 'servicios', 'manufactura', 'agricultura', 'transporte', 'otro'],
-      tipo_negocio: ['formal', 'informal'],
-      tipo_vivienda: ['propia', 'alquilada', 'familiar', 'otra'],
-      estabilidad_vivienda: ['alta', 'media', 'baja'],
-      calificacion_riesgo: ['bajo', 'medio', 'alto']
-    };
+    // Números válidos
+    const toNumber = (v) => (v === null || v === undefined || v === '' ? null : Number(v));
+    const ing = toNumber(ingresos_mensuales);
+    const gas = toNumber(gastos_mensuales);
+    const trab = toNumber(numero_trabajadores);
 
-    if (!ENUMS.sector_economico.includes(sector_economico))
-      throw new Error(`sector_economico debe ser uno de: ${ENUMS.sector_economico.join(', ')}`);
+    if (ing === null || Number.isNaN(ing)) throw new Error('ingresos_mensuales es obligatorio y debe ser numérico.');
+    if (gas === null || Number.isNaN(gas)) throw new Error('gastos_mensuales es obligatorio y debe ser numérico.');
+    if (trab !== null && (Number.isNaN(trab) || trab < 0)) throw new Error('numero_trabajadores debe ser un entero >= 0.');
 
-    if (!ENUMS.tipo_negocio.includes(tipo_negocio))
-      throw new Error(`tipo_negocio debe ser uno de: ${ENUMS.tipo_negocio.join(', ')}`);
-
-    if (!ENUMS.tipo_vivienda.includes(tipo_vivienda))
-      throw new Error(`tipo_vivienda debe ser uno de: ${ENUMS.tipo_vivienda.join(', ')}`);
-
-    if (!ENUMS.estabilidad_vivienda.includes(estabilidad_vivienda))
-      throw new Error(`estabilidad_vivienda debe ser uno de: ${ENUMS.estabilidad_vivienda.join(', ')}`);
-
-    if (!ENUMS.calificacion_riesgo.includes(calificacion_riesgo))
-      throw new Error(`calificacion_riesgo debe ser uno de: ${ENUMS.calificacion_riesgo.join(', ')}`);
-
-    // Normalizar valores numéricos por defecto
+    // Normalizaciones y defaults suaves
     return {
-      descripcion_negocio: null,
-      numero_empleados: 0,
-      egresos_mensuales: 0.00,
-      tiempo_residencia_anios: 0,
-      observaciones: null,
-      ...data
+      sector_economico: data.sector_economico ?? null,
+      ubicacion_negocio: data.ubicacion_negocio ?? null,
+      tiempo_funcionamiento: data.tiempo_funcionamiento ?? null,
+      tipo_local: data.tipo_local ?? null,
+      numero_trabajadores: trab ?? 0,
+      ingresos_mensuales: ing,
+      gastos_mensuales: gas,
+      productos_servicios: data.productos_servicios ?? null,
+      canales_venta: data.canales_venta ?? null,
+      frecuencia_ventas: data.frecuencia_ventas ?? null,
+      apoyo_familiar: data.apoyo_familiar ?? null,
+      nivel_educativo: data.nivel_educativo ?? null,
+      // Campos obligatorios ya verificados
+      id_usuario,
+      nombre_emprendimiento,
+      // ⚠️ JAMÁS aceptar utilidad_neta del cliente (columna generada)
+      utilidad_neta: undefined,
+      fecha_registro: undefined,
+      id_emprendimiento: undefined,
     };
-  }
+  },
+
+  // Lista blanca de campos de la tabla (para insert/update dinámico)
+  allowedColumns: [
+    'id_usuario',
+    'nombre_emprendimiento',
+    'sector_economico',
+    'ubicacion_negocio',
+    'tiempo_funcionamiento',
+    'tipo_local',
+    'numero_trabajadores',
+    'ingresos_mensuales',
+    'gastos_mensuales',
+    'productos_servicios',
+    'canales_venta',
+    'frecuencia_ventas',
+    'apoyo_familiar',
+    'nivel_educativo',
+    // utilidad_neta es GENERADA -> no incluir
+    // fecha_registro es DEFAULT -> no incluir
+  ],
+
+  sanitizeForInsert(payload) {
+    const clean = {};
+    for (const k of this.allowedColumns) {
+      if (payload[k] !== undefined) clean[k] = payload[k];
+    }
+    return clean;
+  },
+
+  sanitizeForUpdate(payload) {
+    const clean = {};
+    for (const k of this.allowedColumns) {
+      // No permitir cambiar id_usuario desde update en esta API
+      if (k === 'id_usuario') continue;
+      if (payload[k] !== undefined) clean[k] = payload[k];
+    }
+    return clean;
+  },
 };

@@ -2,7 +2,7 @@ import { Solicitud } from '../models/Solicitud.js';
 import { Credito } from '../models/Credito.js';
 import { Pago } from '../models/Pago.js';
 import { Mora } from '../models/Mora.js';
-import { Emprendedor } from '../models/Emprendedor.js';
+import { Emprendimiento } from '../models/Emprendedor.js';
 
 export class DashboardService {
   // Obtener métricas generales para admin

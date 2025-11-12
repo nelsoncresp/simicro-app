@@ -1,5 +1,5 @@
 import { Solicitud } from '../models/Solicitud.js';
-import { Emprendedor } from '../models/Emprendedor.js';
+//import { Emprendedor } from '../models/Emprendedor.js';
 import { success, error } from '../utils/responses.js';
 import { calcularRatio, generarCuotas } from '../utils/helpers.js';
 

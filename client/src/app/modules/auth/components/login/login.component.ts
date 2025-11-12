@@ -31,6 +31,12 @@ export class LoginComponent {
     { role: 'Emprendedor', email: 'emprendedor@ejemplo.com', password: 'password123' }
   ];
 
+
+  login() {
+
+  }
+
+
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -42,12 +48,14 @@ export class LoginComponent {
       this.errorMessage = '';
 
       const { email, password } = this.loginForm.value;
-      
+      // console.log('XXXXXXXXXXXXX', JSON.stringify(this.loginForm.value));
+
+
       this.authService.login(email!, password!).subscribe({
         next: (response: any) => {
           this.isLoading = false;
-          console.log('Login response:', response);
-          
+          // console.log('Login response:', response);
+
           if (response.success && response.data?.user) {
             // CORREGIDO: Usar response.data.user.rol
             this.redirectByRole(response.data.user.rol);
@@ -58,7 +66,7 @@ export class LoginComponent {
         error: (error: any) => {
           this.isLoading = false;
           console.error('Error de login:', error);
-          
+
           if (error.status === 401) {
             this.errorMessage = 'Email o contraseña incorrectos';
           } else if (error.status === 400) {
@@ -75,7 +83,7 @@ export class LoginComponent {
 
   private redirectByRole(rol: string): void {
     console.log('Redirigiendo por rol:', rol);
-    
+
     switch (rol) {
       case 'admin':
         this.router.navigate(['/admin/dashboard']);
