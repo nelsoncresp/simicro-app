@@ -17,6 +17,18 @@ router.use(authenticate);
 
 /**
  * @swagger
+ * /api/emprendimientos/mio:
+ *   get:
+ *     summary: Obtener los emprendimientos del usuario autenticado
+ *     tags: [Emprendimientos]
+ *     security: [ { bearerAuth: [] } ]
+ *     responses:
+ *       200: { description: Lista (posiblemente vacía) de emprendimientos del usuario }
+ */
+router.get('/mio', EmprendimientoController.obtenerMio);
+
+/**
+ * @swagger
  * /api/emprendimientos:
  *   post:
  *     summary: Crear un nuevo emprendimiento (solo rol emprendedor y uno por usuario)

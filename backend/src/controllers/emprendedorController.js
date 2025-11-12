@@ -32,6 +32,18 @@ export class EmprendimientoController {
     }
   }
 
+  static async obtenerMio(req, res) {
+    try {
+      const { id_usuario } = req.user; // viene del middleware authenticate
+      const rows = await Emprendimiento.findManyByUserId(id_usuario);
+      // Devolver siempre array (aunque en tu negocio hoy puede ser 1)
+      return res.json(rows);
+    } catch (error) {
+      console.error('Error obteniendo emprendimientos del usuario:', error);
+      return res.status(500).json({ message: 'Error al obtener tus emprendimientos' });
+    }
+  }
+
   static async listar(req, res) {
     try {
       const list = await Emprendimiento.findAll();

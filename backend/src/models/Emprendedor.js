@@ -62,4 +62,16 @@ export class Emprendimiento {
 
     return this.findById(id);
   }
+
+  static async findManyByUserId(userId) {
+    const [rows] = await pool.execute(
+      `SELECT e.*, u.email, u.nombre AS nombre_completo
+       FROM ${this.table} e
+       INNER JOIN usuarios u ON e.id_usuario = u.id_usuario
+       WHERE e.id_usuario = ?
+       ORDER BY e.fecha_registro DESC`,
+      [userId]
+    );
+    return rows; // array
+  }
 }
