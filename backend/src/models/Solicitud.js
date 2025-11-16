@@ -8,6 +8,7 @@ export class Solicitud {
       id_emprendedor,
       monto_solicitado,
       plazo_semanas,
+      motivo_prestamo,
       estado = 'pendiente',
       calificacion_riesgo = null,
       ratio_cuota_utilidad = null,
@@ -16,9 +17,9 @@ export class Solicitud {
 
     const [result] = await pool.execute(
       `INSERT INTO solicitudes 
-       (id_emprendimiento, monto_solicitado, plazo_semanas, estado, calificacion_riesgo, ratio_cuota_utilidad, motivo_decision)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [id_emprendedor, monto_solicitado, plazo_semanas, estado, calificacion_riesgo, ratio_cuota_utilidad, motivo_decision]
+       (id_emprendedor, monto_solicitado, motivo_prestamo, plazo_semanas, estado, calificacion_riesgo, ratio_cuota_utilidad, motivo_decision)
+       VALUES (?, ?,?, ?, ?, ?, ?, ?)`,
+      [id_emprendedor, monto_solicitado, motivo_prestamo, plazo_semanas, estado, calificacion_riesgo, ratio_cuota_utilidad, motivo_decision]
     );
 
     return this.findById(result.insertId);
@@ -32,7 +33,7 @@ export class Solicitud {
               e.ingresos_mensuales, e.gastos_mensuales, e.utilidad_neta, e.tiempo_funcionamiento,
               u.nombre AS nombre_emprendedor, u.email
        FROM solicitudes s
-       INNER JOIN emprendimientos e ON s.id_emprendimiento = e.id_emprendimiento
+       INNER JOIN emprendimientos e ON s.id_emprendedor = e.id_emprendimiento
        INNER JOIN usuarios u ON e.id_usuario = u.id_usuario
        WHERE s.id_solicitud = ?`,
       [id]
@@ -79,7 +80,7 @@ export class Solicitud {
     const [rows] = await pool.execute(
       `SELECT s.*, e.nombre_emprendimiento AS nombre_negocio, e.utilidad_neta
        FROM solicitudes s
-       INNER JOIN emprendimientos e ON s.id_emprendimiento = e.id_emprendimiento
+       INNER JOIN emprendimientos e ON s.id_emprendedor = e.id_emprendimiento
        INNER JOIN usuarios u ON e.id_usuario = u.id_usuario
        WHERE u.id_usuario = ?
        ORDER BY s.fecha_solicitud DESC`,
@@ -110,5 +111,65 @@ export class Solicitud {
        WHERE id_solicitud = ?`,
       values
     );
+  }
+
+  // Actualizar análisis del analista
+  static async updateAnalisis(id, id_analista, observaciones_analista) {
+    await pool.execute(
+      `UPDATE solicitudes 
+       SET id_analista = ?, observaciones_analista = ?, fecha_analisis = CURRENT_TIMESTAMP, fecha_actualizacion = CURRENT_TIMESTAMP
+       WHERE id_solicitud = ?`,
+      [id_analista, observaciones_analista, id]
+    );
+    return this.findById(id);
+  }
+
+  // Decidir solicitud (solo analista)
+  static async decidirSolicitud(id, accion) {
+    const nuevoEstado = accion === 'aprobar' ? 'aprobado' : 'rechazado';
+    await pool.execute(
+      `UPDATE solicitudes 
+       SET estado = ?, fecha_actualizacion = CURRENT_TIMESTAMP
+       WHERE id_solicitud = ?`,
+      [nuevoEstado, id]
+    );
+    return this.findById(id);
+  }
+
+  // Actualizar estado + riesgo por analista (antes de aprobar/rechazar)
+  static async updateAnalisisCompleto(id, id_analista, observaciones_analista, estado, riesgo, motivo) {
+    const fields = [];
+    const values = [];
+
+    if (id_analista) {
+      fields.push('id_analista = ?');
+      values.push(id_analista);
+    }
+    if (observaciones_analista) {
+      fields.push('observaciones_analista = ?');
+      values.push(observaciones_analista);
+      fields.push('fecha_analisis = CURRENT_TIMESTAMP');
+    }
+    if (estado) {
+      fields.push('estado = ?');
+      values.push(estado);
+    }
+    if (riesgo) {
+      fields.push('calificacion_riesgo = ?');
+      values.push(riesgo);
+    }
+    if (motivo) {
+      fields.push('motivo_decision = ?');
+      values.push(motivo);
+    }
+
+    values.push(id);
+    await pool.execute(
+      `UPDATE solicitudes 
+       SET ${fields.join(', ')}, fecha_actualizacion = CURRENT_TIMESTAMP 
+       WHERE id_solicitud = ?`,
+      values
+    );
+    return this.findById(id);
   }
 }

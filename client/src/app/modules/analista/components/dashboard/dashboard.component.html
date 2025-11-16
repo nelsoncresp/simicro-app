@@ -1,1 +1,92 @@
-<p>dashboard works!</p>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard Analista</h1>
+      <p class="text-gray-600">Gestiona y evalúa las solicitudes de crédito</p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+      <!-- Solicitudes Pendientes -->
+      <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 p-6 text-white transform hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-4">
+          <div class="bg-white bg-opacity-20 rounded-lg p-3">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+        </div>
+        <h3 class="text-3xl font-bold mb-1">{{ stats[0].value }}</h3>
+        <p class="text-yellow-100 text-sm font-medium">{{ stats[0].title }}</p>
+      </div>
+
+      <!-- En Evaluación -->
+      <div class="bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 p-6 text-white transform hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-4">
+          <div class="bg-white bg-opacity-20 rounded-lg p-3">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+        </div>
+        <h3 class="text-3xl font-bold mb-1">{{ stats[1].value }}</h3>
+        <p class="text-blue-100 text-sm font-medium">{{ stats[1].title }}</p>
+      </div>
+
+      <!-- Aprobadas Hoy -->
+      <div class="bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 p-6 text-white transform hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-4">
+          <div class="bg-white bg-opacity-20 rounded-lg p-3">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+        <h3 class="text-3xl font-bold mb-1">{{ stats[2].value }}</h3>
+        <p class="text-green-100 text-sm font-medium">{{ stats[2].title }}</p>
+      </div>
+
+      <!-- Rechazadas Hoy -->
+      <div class="bg-gradient-to-br from-red-400 to-red-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 p-6 text-white transform hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-4">
+          <div class="bg-white bg-opacity-20 rounded-lg p-3">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+        <h3 class="text-3xl font-bold mb-1">{{ stats[3].value }}</h3>
+        <p class="text-red-100 text-sm font-medium">{{ stats[3].title }}</p>
+      </div>
+    </div>
+
+    <!-- Solicitudes Recientes -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-purple-50">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="bg-indigo-100 rounded-lg p-2 mr-3">
+              <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900">Solicitudes Recientes</h3>
+          </div>
+          <button class="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-100 hover:bg-indigo-200 rounded-lg transition-colors">
+            Ver todas
+          </button>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="text-center py-12">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">Sin solicitudes pendientes</h3>
+          <p class="mt-1 text-sm text-gray-500">Las solicitudes que requieran evaluación aparecerán aquí.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

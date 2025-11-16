@@ -1,22 +1,93 @@
 <!-- src/app/modules/emprendedor/components/dashboard/dashboard.component.html -->
-<div class="dashboard">
-  <h1>Dashboard Emprendedor</h1>
-  
-  <div class="stats-grid">
-    <!-- CORREGIDO: usando @for -->
-    @for (stat of stats; track stat.title) {
-      <div class="stat-card">
-        <div class="stat-icon">{{ stat.icon }}</div>
-        <div class="stat-info">
-          <h3>{{ stat.value }}</h3>
-          <p>{{ stat.title }}</p>
+<div
+  class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8"
+>
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">
+        Dashboard Emprendedor
+      </h1>
+      <p class="text-gray-600">
+        Bienvenido, aquí puedes ver el resumen de tus solicitudes
+      </p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+      @for (stat of stats; track stat.title) {
+      <div
+        class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-6 border border-gray-100"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <p class="text-sm font-medium text-gray-600 mb-1">
+              {{ stat.title }}
+            </p>
+            <p class="text-3xl font-bold text-gray-900">{{ stat.value }}</p>
+          </div>
+          <div class="ml-4 text-4xl opacity-80">
+            {{ stat.icon }}
+          </div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-100">
+          <div
+            class="h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
+          ></div>
         </div>
       </div>
-    }
-  </div>
+      }
+    </div>
 
-  <div class="recent-activity">
-    <h2>Actividad Reciente</h2>
-    <p>Aquí irá el historial de tus solicitudes...</p>
+    <!-- Actividad Reciente -->
+    <div
+      class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+    >
+      <div
+        class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50"
+      >
+        <div class="flex items-center">
+          <svg
+            class="w-6 h-6 text-blue-600 mr-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <h2 class="text-xl font-semibold text-gray-900">
+            Actividad Reciente
+          </h2>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="text-center py-12">
+          <svg
+            class="mx-auto h-12 w-12 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            ></path>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">
+            Sin actividad reciente
+          </h3>
+          <p class="mt-1 text-sm text-gray-500">
+            Aquí aparecerá el historial de tus solicitudes cuando las tengas.
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

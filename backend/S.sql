@@ -73,11 +73,16 @@ CREATE TABLE solicitudes (
     estado ENUM('pendiente', 'pre-aprobado', 'aprobado', 'rechazado', 'activo') DEFAULT 'pendiente',
     calificacion_riesgo ENUM('bajo', 'medio', 'alto'),
     ratio_cuota_utilidad DECIMAL(5,2),
+    motivo_prestamo TEXT,
     motivo_decision TEXT,
+    id_analista INT,
+    observaciones_analista TEXT,
+    fecha_analisis TIMESTAMP NULL,
     fecha_solicitud TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
-    FOREIGN KEY (id_emprendedor) REFERENCES emprendedores(id_emprendedor) ON DELETE CASCADE
+    FOREIGN KEY (id_emprendedor) REFERENCES emprendimientos(id_emprendimiento) ON DELETE CASCADE,
+    FOREIGN KEY (id_analista) REFERENCES usuarios(id_usuario) ON DELETE SET NULL
 );
 
 -- =========================================================

@@ -115,9 +115,9 @@ router.get('/:id', requireAdminOrAnalyst, SolicitudController.obtenerSolicitud);
 
 /**
  * @swagger
- * /api/solicitudes/{id}/decision:
- *   patch:
- *     summary: Aprobar o rechazar una solicitud (solo Administradores)
+ * /api/solicitudes/{id}:
+ *   put:
+ *     summary: Actualizar análisis de solicitud (solo Analistas)
  *     tags: [Solicitudes]
  *     security:
  *       - bearerAuth: []
@@ -127,7 +127,37 @@ router.get('/:id', requireAdminOrAnalyst, SolicitudController.obtenerSolicitud);
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID de la solicitud
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               observaciones_analista:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Solicitud analizada exitosamente
+ *       403:
+ *         description: No autorizado - requiere rol de analista
+ */
+router.put('/:id', requireAnalyst, SolicitudController.actualizarSolicitud);
+
+/**
+ * @swagger
+ * /api/solicitudes/{id}/decision:
+ *   patch:
+ *     summary: Aprobar o rechazar solicitud (solo Analistas) - Crea crédito si aprueba
+ *     tags: [Solicitudes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
  *     requestBody:
  *       required: true
  *       content:
@@ -140,17 +170,14 @@ router.get('/:id', requireAdminOrAnalyst, SolicitudController.obtenerSolicitud);
  *               accion:
  *                 type: string
  *                 enum: [aprobar, rechazar]
- *                 description: Acción a ejecutar sobre la solicitud
  *     responses:
  *       200:
- *         description: Solicitud actualizada exitosamente (aprobada o rechazada)
+ *         description: Solicitud decidida. Si aprobada, crédito y cuotas creados
  *       400:
  *         description: Solo se pueden decidir solicitudes pre-aprobadas
  *       403:
- *         description: No autorizado - requiere rol de administrador
- *       404:
- *         description: Solicitud no encontrada
+ *         description: No autorizado - requiere rol de analista
  */
-router.patch('/:id/decision', requireAdmin, SolicitudController.decidirSolicitud);
+router.patch('/:id/decision', requireAnalyst, SolicitudController.decidirSolicitud);
 
 export default router;

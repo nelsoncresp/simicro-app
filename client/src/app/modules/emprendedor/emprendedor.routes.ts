@@ -17,6 +17,14 @@ export const EMPRENDEDOR_ROUTES: Routes = [
         path: 'solicitudes',
         loadComponent: () => import('./components/solicitudes/solicitudes.component').then(m => m.SolicitudesComponent)
       },
+      {
+        path: 'productos',
+        loadComponent: () => import('./components/productos/productos.component').then(m => m.ProductosComponent)
+      },
+      {
+        path: 'mi-emprendimiento',
+        loadComponent: () => import('./components/mi-emprendimiento/mi-emprendimiento.component').then(m => m.MiEmprendimientoComponent)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

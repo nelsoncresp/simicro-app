@@ -6,12 +6,15 @@ import solicitudRoutes from './solicitud.routes.js';
 import creditoRoutes from './credito.routes.js';
 import pagoRoutes from './pago.routes.js';
 import dashboardRoutes from './dashboard.routes.js';
-
+import detalleUsuarioRoutes from './detalleUsuarioRoutes.js';
+import morgan from 'morgan';
 const router = Router();
 
 // Configurar rutas
+router.use(morgan('dev'));
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
+router.use('/detalle-usuario', detalleUsuarioRoutes);
 router.use('/emprendedores', emprendedorRoutes);
 router.use('/solicitudes', solicitudRoutes);
 router.use('/creditos', creditoRoutes);

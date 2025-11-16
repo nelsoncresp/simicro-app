@@ -1,90 +1,169 @@
-<div class="dashboard-admin">
-  <div class="header">
-    <h1>Dashboard Administrador</h1>
-    <p>Resumen general del sistema</p>
-  </div>
-
-  <!-- Estadísticas principales -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon">👥</div>
-      <div class="stat-info">
-        <h3>{{ dashboardData?.totalUsuarios || '0' }}</h3>
-        <p>Total Usuarios</p>
-      </div>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard Administrador</h1>
+      <p class="text-gray-600">Resumen general del sistema y métricas clave</p>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon">💰</div>
-      <div class="stat-info">
-        <h3>{{ dashboardData?.totalCreditos || '0' }}</h3>
-        <p>Créditos Totales</p>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon">📊</div>
-      <div class="stat-info">
-        <h3>{{ dashboardData?.creditosActivos || '0' }}</h3>
-        <p>Créditos Activos</p>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon">💵</div>
-      <div class="stat-info">
-        <h3>${{ dashboardData?.montoTotal?.toLocaleString() || '0' }}</h3>
-        <p>Monto Total</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Secciones adicionales -->
-  <div class="sections-grid">
-    <div class="section-card">
-      <h3>📈 Actividad Reciente</h3>
-      <div class="activity-list">
-        <div class="activity-item" *ngFor="let activity of dashboardData?.actividadReciente || []">
-          <span class="activity-desc">{{ activity.descripcion }}</span>
-          <span class="activity-time">{{ activity.timestamp | date:'short' }}</span>
+    <!-- Estadísticas principales -->
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+      <!-- Total Usuarios -->
+      <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 p-6 text-white transform hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-4">
+          <div class="bg-white bg-opacity-20 rounded-lg p-3">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+          </div>
         </div>
-        <div *ngIf="!(dashboardData?.actividadReciente?.length)" class="no-data">
-          No hay actividad reciente
+        <h3 class="text-3xl font-bold mb-1">{{ dashboardData?.totalUsuarios || '0' }}</h3>
+        <p class="text-blue-100 text-sm font-medium">Total Usuarios</p>
+      </div>
+
+      <!-- Créditos Totales -->
+      <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 p-6 text-white transform hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-4">
+          <div class="bg-white bg-opacity-20 rounded-lg p-3">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+        <h3 class="text-3xl font-bold mb-1">{{ dashboardData?.totalCreditos || '0' }}</h3>
+        <p class="text-green-100 text-sm font-medium">Créditos Totales</p>
+      </div>
+
+      <!-- Créditos Activos -->
+      <div class="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 p-6 text-white transform hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-4">
+          <div class="bg-white bg-opacity-20 rounded-lg p-3">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+        </div>
+        <h3 class="text-3xl font-bold mb-1">{{ dashboardData?.creditosActivos || '0' }}</h3>
+        <p class="text-purple-100 text-sm font-medium">Créditos Activos</p>
+      </div>
+
+      <!-- Monto Total -->
+      <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 p-6 text-white transform hover:-translate-y-1">
+        <div class="flex items-center justify-between mb-4">
+          <div class="bg-white bg-opacity-20 rounded-lg p-3">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+        <h3 class="text-3xl font-bold mb-1">${{ dashboardData?.montoTotal?.toLocaleString() || '0' }}</h3>
+        <p class="text-amber-100 text-sm font-medium">Monto Total</p>
+      </div>
+    </div>
+
+    <!-- Secciones adicionales -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <!-- Actividad Reciente -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div class="flex items-center">
+            <div class="bg-blue-100 rounded-lg p-2 mr-3">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900">Actividad Reciente</h3>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="space-y-4" *ngIf="dashboardData?.actividadReciente?.length; else noActivity">
+            <div *ngFor="let activity of dashboardData.actividadReciente" class="flex items-start justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div class="flex-1">
+                <p class="text-sm font-medium text-gray-900">{{ activity.descripcion }}</p>
+                <p class="text-xs text-gray-500 mt-1">{{ activity.timestamp | date:'short' }}</p>
+              </div>
+              <div class="ml-4">
+                <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+          <ng-template #noActivity>
+            <div class="text-center py-8">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <p class="mt-2 text-sm text-gray-500">No hay actividad reciente</p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Alertas -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-red-50 to-orange-50">
+          <div class="flex items-center">
+            <div class="bg-red-100 rounded-lg p-2 mr-3">
+              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900">Alertas</h3>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="space-y-3" *ngIf="dashboardData?.solicitudesPendientes > 0 || dashboardData?.pagosVencidos > 0; else noAlerts">
+            <div *ngIf="dashboardData?.solicitudesPendientes > 0" class="flex items-center p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
+              <svg class="w-5 h-5 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+              </svg>
+              <span class="text-sm font-medium text-yellow-800">{{ dashboardData.solicitudesPendientes }} solicitudes pendientes</span>
+            </div>
+            <div *ngIf="dashboardData?.pagosVencidos > 0" class="flex items-center p-4 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
+              <svg class="w-5 h-5 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span class="text-sm font-medium text-red-800">{{ dashboardData.pagosVencidos }} pagos vencidos</span>
+            </div>
+          </div>
+          <ng-template #noAlerts>
+            <div class="text-center py-8">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <p class="mt-2 text-sm text-gray-500">No hay alertas</p>
+            </div>
+          </ng-template>
         </div>
       </div>
     </div>
 
-    <div class="section-card">
-      <h3>🚨 Alertas</h3>
-      <div class="alerts-list">
-        <div class="alert-item warning" *ngIf="dashboardData?.solicitudesPendientes > 0">
-          <span>{{ dashboardData.solicitudesPendientes }} solicitudes pendientes</span>
-        </div>
-        <div class="alert-item info" *ngIf="dashboardData?.pagosVencidos > 0">
-          <span>{{ dashboardData.pagosVencidos }} pagos vencidos</span>
-        </div>
-        <div *ngIf="!(dashboardData?.solicitudesPendientes > 0) && !(dashboardData?.pagosVencidos > 0)" class="no-data">
-          No hay alertas
+    <!-- Métricas Detalladas -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-purple-50">
+        <div class="flex items-center">
+          <div class="bg-indigo-100 rounded-lg p-2 mr-3">
+            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-900">Métricas Detalladas</h3>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Métricas detalladas -->
-  <div class="metrics-section">
-    <h3>Métricas Detalladas</h3>
-    <div class="metrics-grid">
-      <div class="metric-item">
-        <span class="metric-label">Tasa de Aprobación</span>
-        <span class="metric-value">{{ dashboardData?.tasaAprobacion || '0' }}%</span>
-      </div>
-      <div class="metric-item">
-        <span class="metric-label">Usuarios Activos</span>
-        <span class="metric-value">{{ dashboardData?.usuariosActivos || '0' }}</span>
-      </div>
-      <div class="metric-item">
-        <span class="metric-label">Ingresos Mensuales</span>
-        <span class="metric-value">${{ dashboardData?.ingresosMensuales?.toLocaleString() || '0' }}</span>
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200">
+            <p class="text-sm font-medium text-gray-600 mb-2">Tasa de Aprobación</p>
+            <p class="text-4xl font-bold text-blue-600">{{ dashboardData?.tasaAprobacion || '0' }}%</p>
+          </div>
+          <div class="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200">
+            <p class="text-sm font-medium text-gray-600 mb-2">Usuarios Activos</p>
+            <p class="text-4xl font-bold text-green-600">{{ dashboardData?.usuariosActivos || '0' }}</p>
+          </div>
+          <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200">
+            <p class="text-sm font-medium text-gray-600 mb-2">Ingresos Mensuales</p>
+            <p class="text-4xl font-bold text-purple-600">${{ dashboardData?.ingresosMensuales?.toLocaleString() || '0' }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -1,0 +1,1099 @@
+@if(!this.getEmpredimiento()) {
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Mi Emprendimiento</h1>
+      <p class="text-gray-600">
+        Completa la información de tu emprendimiento para continuar
+      </p>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="bg-white rounded-t-lg shadow-sm border-b border-gray-200">
+      <nav class="flex space-x-1 px-4" aria-label="Tabs">
+        <button
+          (click)="setActiveTab(0)"
+          [class]="
+            activeTab === 0
+              ? 'border-blue-500 text-blue-600 bg-blue-50'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          "
+          class="px-6 py-4 text-sm font-medium border-b-2 transition-colors duration-200"
+        >
+          Información General
+        </button>
+        <button
+          (click)="setActiveTab(1)"
+          [class]="
+            activeTab === 1
+              ? 'border-blue-500 text-blue-600 bg-blue-50'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          "
+          class="px-6 py-4 text-sm font-medium border-b-2 transition-colors duration-200"
+        >
+          Información Financiera
+        </button>
+        <button
+          (click)="setActiveTab(2)"
+          [class]="
+            activeTab === 2
+              ? 'border-blue-500 text-blue-600 bg-blue-50'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          "
+          class="px-6 py-4 text-sm font-medium border-b-2 transition-colors duration-200"
+        >
+          Información Comercial
+        </button>
+        <button
+          (click)="setActiveTab(3)"
+          [class]="
+            activeTab === 3
+              ? 'border-blue-500 text-blue-600 bg-blue-50'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          "
+          class="px-6 py-4 text-sm font-medium border-b-2 transition-colors duration-200"
+        >
+          Información Personal
+        </button>
+      </nav>
+    </div>
+
+    <!-- Form Content -->
+    <form
+      [formGroup]="emprendimientoForm"
+      (ngSubmit)="onSubmit()"
+      class="bg-white rounded-b-lg shadow-sm p-6 md:p-8"
+    >
+      <!-- Tab 1: Información General -->
+      <div *ngIf="activeTab === 0" class="space-y-6 animate-fadeIn">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">
+            Información General del Emprendimiento
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Nombre del Emprendimiento -->
+            <div class="md:col-span-2">
+              <label
+                for="nombre_emprendimiento"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Nombre del Emprendimiento <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="nombre_emprendimiento"
+                formControlName="nombre_emprendimiento"
+                [class]="
+                  isFieldInvalid('nombre_emprendimiento')
+                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                "
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors"
+                placeholder="Ej: Mi Tienda de Ropa"
+              />
+              <p
+                *ngIf="isFieldInvalid('nombre_emprendimiento')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("nombre_emprendimiento") }}
+              </p>
+            </div>
+
+            <!-- Sector Económico -->
+            <div>
+              <label
+                for="sector_economico"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Sector Económico <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="sector_economico"
+                formControlName="sector_economico"
+                [class]="
+                  isFieldInvalid('sector_economico')
+                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                "
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors bg-white"
+              >
+                <option value="">Seleccione un sector</option>
+                <option
+                  *ngFor="let sector of sectoresEconomicos"
+                  [value]="sector"
+                >
+                  {{ sector }}
+                </option>
+              </select>
+              <p
+                *ngIf="isFieldInvalid('sector_economico')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("sector_economico") }}
+              </p>
+            </div>
+
+            <!-- Ubicación del Negocio -->
+            <div>
+              <label
+                for="ubicacion_negocio"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Ubicación del Negocio <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="ubicacion_negocio"
+                formControlName="ubicacion_negocio"
+                [class]="
+                  isFieldInvalid('ubicacion_negocio')
+                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                "
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors"
+                placeholder="Ej: Calle Principal #123, Ciudad"
+              />
+              <p
+                *ngIf="isFieldInvalid('ubicacion_negocio')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("ubicacion_negocio") }}
+              </p>
+            </div>
+
+            <!-- Tiempo de Funcionamiento -->
+            <div>
+              <label
+                for="tiempo_funcionamiento"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Tiempo de Funcionamiento <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="tiempo_funcionamiento"
+                formControlName="tiempo_funcionamiento"
+                [class]="
+                  isFieldInvalid('tiempo_funcionamiento')
+                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                "
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors"
+                placeholder="Ej: 2 años, 6 meses"
+              />
+              <p
+                *ngIf="isFieldInvalid('tiempo_funcionamiento')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("tiempo_funcionamiento") }}
+              </p>
+            </div>
+
+            <!-- Tipo de Local -->
+            <div>
+              <label
+                for="tipo_local"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Tipo de Local <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="tipo_local"
+                formControlName="tipo_local"
+                [class]="
+                  isFieldInvalid('tipo_local')
+                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                "
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors bg-white"
+              >
+                <option value="">Seleccione un tipo</option>
+                <option *ngFor="let tipo of tiposLocal" [value]="tipo">
+                  {{ tipo }}
+                </option>
+              </select>
+              <p
+                *ngIf="isFieldInvalid('tipo_local')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("tipo_local") }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Información Financiera -->
+      <div *ngIf="activeTab === 1" class="space-y-6 animate-fadeIn">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">
+            Información Financiera
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Número de Trabajadores -->
+            <div>
+              <label
+                for="numero_trabajadores"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Número de Trabajadores <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                id="numero_trabajadores"
+                formControlName="numero_trabajadores"
+                [class]="
+                  isFieldInvalid('numero_trabajadores')
+                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                "
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors"
+                placeholder="0"
+                min="0"
+              />
+              <p
+                *ngIf="isFieldInvalid('numero_trabajadores')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("numero_trabajadores") }}
+              </p>
+            </div>
+
+            <!-- Ingresos Mensuales -->
+            <div>
+              <label
+                for="ingresos_mensuales"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Ingresos Mensuales (COP) <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute left-4 top-2.5 text-gray-500">$</span>
+                <input
+                  type="number"
+                  id="ingresos_mensuales"
+                  formControlName="ingresos_mensuales"
+                  [class]="
+                    isFieldInvalid('ingresos_mensuales')
+                      ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                      : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                  "
+                  class="w-full pl-8 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+              <p
+                *ngIf="isFieldInvalid('ingresos_mensuales')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("ingresos_mensuales") }}
+              </p>
+            </div>
+
+            <!-- Gastos Mensuales -->
+            <div>
+              <label
+                for="gastos_mensuales"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Gastos Mensuales (COP) <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute left-4 top-2.5 text-gray-500">$</span>
+                <input
+                  type="number"
+                  id="gastos_mensuales"
+                  formControlName="gastos_mensuales"
+                  [class]="
+                    isFieldInvalid('gastos_mensuales')
+                      ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                      : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                  "
+                  class="w-full pl-8 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+              <p
+                *ngIf="isFieldInvalid('gastos_mensuales')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("gastos_mensuales") }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Resumen Financiero -->
+          <div
+            *ngIf="
+              emprendimientoForm.get('ingresos_mensuales')?.value > 0 ||
+              emprendimientoForm.get('gastos_mensuales')?.value > 0
+            "
+            class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200"
+          >
+            <h3 class="text-sm font-semibold text-blue-900 mb-2">
+              Resumen Financiero
+            </h3>
+            <div class="grid grid-cols-3 gap-4 text-sm">
+              <div>
+                <p class="text-gray-600">Ingresos:</p>
+                <p class="text-lg font-semibold text-green-600">
+                  ${{
+                    emprendimientoForm.get("ingresos_mensuales")?.value || 0
+                      | number : "1.2-2"
+                  }}
+                </p>
+              </div>
+              <div>
+                <p class="text-gray-600">Gastos:</p>
+                <p class="text-lg font-semibold text-red-600">
+                  ${{
+                    emprendimientoForm.get("gastos_mensuales")?.value || 0
+                      | number : "1.2-2"
+                  }}
+                </p>
+              </div>
+              <div>
+                <p class="text-gray-600">Utilidad:</p>
+                <p
+                  class="text-lg font-semibold"
+                  [class.text-green-600]="
+                    (emprendimientoForm.get('ingresos_mensuales')?.value || 0) -
+                      (emprendimientoForm.get('gastos_mensuales')?.value ||
+                        0) >=
+                    0
+                  "
+                  [class.text-red-600]="
+                    (emprendimientoForm.get('ingresos_mensuales')?.value || 0) -
+                      (emprendimientoForm.get('gastos_mensuales')?.value || 0) <
+                    0
+                  "
+                >
+                  ${{
+                    (emprendimientoForm.get("ingresos_mensuales")?.value || 0) -
+                      (emprendimientoForm.get("gastos_mensuales")?.value || 0)
+                      | number : "1.2-2"
+                  }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Información Comercial -->
+      <div *ngIf="activeTab === 2" class="space-y-6 animate-fadeIn">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">
+            Información Comercial
+          </h2>
+
+          <div class="grid grid-cols-1 gap-6">
+            <!-- Productos y Servicios -->
+            <div>
+              <label
+                for="productos_servicios"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Productos y Servicios <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                id="productos_servicios"
+                formControlName="productos_servicios"
+                rows="4"
+                [class]="
+                  isFieldInvalid('productos_servicios')
+                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                "
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors resize-none"
+                placeholder="Describe los productos o servicios que ofreces..."
+              ></textarea>
+              <p
+                *ngIf="isFieldInvalid('productos_servicios')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("productos_servicios") }}
+              </p>
+            </div>
+
+            <!-- Canales de Venta -->
+            <div>
+              <label
+                for="canales_venta"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Canales de Venta <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="canales_venta"
+                formControlName="canales_venta"
+                [class]="
+                  isFieldInvalid('canales_venta')
+                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                "
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors bg-white"
+              >
+                <option value="">Seleccione un canal</option>
+                <option *ngFor="let canal of canalesVenta" [value]="canal">
+                  {{ canal }}
+                </option>
+              </select>
+              <p
+                *ngIf="isFieldInvalid('canales_venta')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("canales_venta") }}
+              </p>
+            </div>
+
+            <!-- Frecuencia de Ventas -->
+            <div>
+              <label
+                for="frecuencia_ventas"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Frecuencia de Ventas <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="frecuencia_ventas"
+                formControlName="frecuencia_ventas"
+                [class]="
+                  isFieldInvalid('frecuencia_ventas')
+                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                "
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors bg-white"
+              >
+                <option value="">Seleccione una frecuencia</option>
+                <option
+                  *ngFor="let frecuencia of frecuenciasVenta"
+                  [value]="frecuencia"
+                >
+                  {{ frecuencia }}
+                </option>
+              </select>
+              <p
+                *ngIf="isFieldInvalid('frecuencia_ventas')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("frecuencia_ventas") }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Información Personal -->
+      <div *ngIf="activeTab === 3" class="space-y-6 animate-fadeIn">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">
+            Información Personal
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Apoyo Familiar -->
+            <div>
+              <label
+                for="apoyo_familiar"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Apoyo Familiar <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="apoyo_familiar"
+                formControlName="apoyo_familiar"
+                [class]="
+                  isFieldInvalid('apoyo_familiar')
+                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                "
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors bg-white"
+              >
+                <option value="">Seleccione una opción</option>
+                <option *ngFor="let apoyo of nivelesApoyo" [value]="apoyo">
+                  {{ apoyo }}
+                </option>
+              </select>
+              <p
+                *ngIf="isFieldInvalid('apoyo_familiar')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("apoyo_familiar") }}
+              </p>
+            </div>
+
+            <!-- Nivel Educativo -->
+            <div>
+              <label
+                for="nivel_educativo"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Nivel Educativo <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="nivel_educativo"
+                formControlName="nivel_educativo"
+                [class]="
+                  isFieldInvalid('nivel_educativo')
+                    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                "
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-colors bg-white"
+              >
+                <option value="">Seleccione un nivel</option>
+                <option *ngFor="let nivel of nivelesEducativos" [value]="nivel">
+                  {{ nivel }}
+                </option>
+              </select>
+              <p
+                *ngIf="isFieldInvalid('nivel_educativo')"
+                class="mt-1 text-sm text-red-600"
+              >
+                {{ getFieldError("nivel_educativo") }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div
+        class="mt-8 flex justify-between items-center pt-6 border-t border-gray-200"
+      >
+        <button
+          type="button"
+          (click)="setActiveTab(activeTab - 1)"
+          [disabled]="activeTab === 0"
+          [class]="
+            activeTab === 0
+              ? 'opacity-50 cursor-not-allowed'
+              : 'hover:bg-gray-100'
+          "
+          class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm transition-colors"
+        >
+          ← Anterior
+        </button>
+
+        <div class="flex space-x-3">
+          <button
+            *ngIf="activeTab < 3"
+            type="button"
+            (click)="setActiveTab(activeTab + 1)"
+            class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors"
+          >
+            Siguiente →
+          </button>
+          <button
+            *ngIf="activeTab === 3"
+            type="submit"
+            [disabled]="emprendimientoForm.invalid"
+            [class]="
+              emprendimientoForm.invalid
+                ? 'opacity-50 cursor-not-allowed'
+                : 'hover:bg-green-700'
+            "
+            class="px-8 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg shadow-sm transition-colors"
+          >
+            Guardar Información
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+} @else {
+<!-- Vista de Solo Lectura - Información del Emprendimiento -->
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Mi Emprendimiento</h1>
+        <p class="text-gray-600">Información completa de tu emprendimiento</p>
+      </div>
+      @if(!tieneEmprendimiento()) {
+      <button
+        (click)="getEmpredimiento.set(false)"
+        class="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
+      >
+        Crear mi emprendimiento
+      </button>
+      }
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="bg-white rounded-t-lg shadow-sm border-b border-gray-200">
+      <nav class="flex space-x-1 px-4" aria-label="Tabs">
+        <button
+          (click)="setActiveTab(0)"
+          [class]="
+            activeTab === 0
+              ? 'border-blue-500 text-blue-600 bg-blue-50'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          "
+          class="px-6 py-4 text-sm font-medium border-b-2 transition-colors duration-200"
+        >
+          Información General
+        </button>
+        <button
+          (click)="setActiveTab(1)"
+          [class]="
+            activeTab === 1
+              ? 'border-blue-500 text-blue-600 bg-blue-50'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          "
+          class="px-6 py-4 text-sm font-medium border-b-2 transition-colors duration-200"
+        >
+          Información Financiera
+        </button>
+        <button
+          (click)="setActiveTab(2)"
+          [class]="
+            activeTab === 2
+              ? 'border-blue-500 text-blue-600 bg-blue-50'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          "
+          class="px-6 py-4 text-sm font-medium border-b-2 transition-colors duration-200"
+        >
+          Información Comercial
+        </button>
+        <button
+          (click)="setActiveTab(3)"
+          [class]="
+            activeTab === 3
+              ? 'border-blue-500 text-blue-600 bg-blue-50'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          "
+          class="px-6 py-4 text-sm font-medium border-b-2 transition-colors duration-200"
+        >
+          Información Personal
+        </button>
+      </nav>
+    </div>
+
+    <!-- Content Card -->
+    <div class="bg-white rounded-b-lg shadow-sm p-6 md:p-8">
+      <!-- Tab 1: Información General -->
+      <div *ngIf="activeTab === 0" class="space-y-6 animate-fadeIn">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">
+            Información General del Emprendimiento
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Nombre del Emprendimiento -->
+            <div class="md:col-span-2">
+              <div
+                class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100"
+              >
+                <label
+                  class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1"
+                >
+                  Nombre del Emprendimiento
+                </label>
+                <p class="text-lg font-bold text-gray-900">
+                  {{ getFormValue("nombre_emprendimiento") }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Sector Económico -->
+            <div>
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <label
+                  class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2"
+                >
+                  Sector Económico
+                </label>
+                <span
+                  class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+                >
+                  {{ getFormValue("sector_economico") }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Ubicación del Negocio -->
+            <div>
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <label
+                  class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2"
+                >
+                  Ubicación del Negocio
+                </label>
+                <p class="text-gray-900 font-medium flex items-center">
+                  <svg
+                    class="w-5 h-5 text-gray-400 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                  {{ getFormValue("ubicacion_negocio") }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Tiempo de Funcionamiento -->
+            <div>
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <label
+                  class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2"
+                >
+                  Tiempo de Funcionamiento
+                </label>
+                <p class="text-gray-900 font-medium flex items-center">
+                  <svg
+                    class="w-5 h-5 text-gray-400 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  {{ getFormValue("tiempo_funcionamiento") }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Tipo de Local -->
+            <div>
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <label
+                  class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2"
+                >
+                  Tipo de Local
+                </label>
+                <span
+                  class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800"
+                >
+                  {{ getFormValue("tipo_local") }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Información Financiera -->
+      <div *ngIf="activeTab === 1" class="space-y-6 animate-fadeIn">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">
+            Información Financiera
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <!-- Número de Trabajadores -->
+            <div
+              class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-100"
+            >
+              <label
+                class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2"
+              >
+                Número de Trabajadores
+              </label>
+              <p class="text-3xl font-bold text-purple-600">
+                {{ getFormValue("numero_trabajadores") }}
+              </p>
+              <p class="text-sm text-gray-500 mt-1">empleados</p>
+            </div>
+
+            <!-- Ingresos Mensuales -->
+            <div
+              class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6 border border-green-100"
+            >
+              <label
+                class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2"
+              >
+                Ingresos Mensuales
+              </label>
+              <p class="text-3xl font-bold text-green-600">
+                ${{ getFormValue("ingresos_mensuales") | number : "1.2-2" }}
+              </p>
+              <p class="text-sm text-gray-500 mt-1">COP</p>
+            </div>
+
+            <!-- Gastos Mensuales -->
+            <div
+              class="bg-gradient-to-br from-red-50 to-rose-50 rounded-lg p-6 border border-red-100"
+            >
+              <label
+                class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2"
+              >
+                Gastos Mensuales
+              </label>
+              <p class="text-3xl font-bold text-red-600">
+                ${{ getFormValue("gastos_mensuales") | number : "1.2-2" }}
+              </p>
+              <p class="text-sm text-gray-500 mt-1">COP</p>
+            </div>
+          </div>
+
+          <!-- Resumen Financiero -->
+          <div
+            class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200"
+          >
+            <h3
+              class="text-lg font-semibold text-blue-900 mb-4 flex items-center"
+            >
+              <svg
+                class="w-6 h-6 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                ></path>
+              </svg>
+              Resumen Financiero
+            </h3>
+            <div class="grid grid-cols-3 gap-4">
+              <div class="text-center">
+                <p class="text-sm text-gray-600 mb-1">Ingresos</p>
+                <p class="text-2xl font-bold text-green-600">
+                  ${{ getFormValue("ingresos_mensuales") | number : "1.2-2" }}
+                </p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-gray-600 mb-1">Gastos</p>
+                <p class="text-2xl font-bold text-red-600">
+                  ${{ getFormValue("gastos_mensuales") | number : "1.2-2" }}
+                </p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-gray-600 mb-1">Utilidad Neta</p>
+                <p
+                  class="text-2xl font-bold"
+                  [class.text-green-600]="getUtilidad() >= 0"
+                  [class.text-red-600]="getUtilidad() < 0"
+                >
+                  ${{ getUtilidad() | number : "1.2-2" }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Información Comercial -->
+      <div *ngIf="activeTab === 2" class="space-y-6 animate-fadeIn">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">
+            Información Comercial
+          </h2>
+
+          <div class="grid grid-cols-1 gap-6">
+            <!-- Productos y Servicios -->
+            <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+              <label
+                class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3"
+              >
+                Productos y Servicios
+              </label>
+              <div class="bg-white rounded-lg p-4 border border-gray-200">
+                <p class="text-gray-900 leading-relaxed whitespace-pre-line">
+                  {{ getFormValue("productos_servicios") }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Canales de Venta -->
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <label
+                class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3"
+              >
+                Canales de Venta
+              </label>
+              <span
+                class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-indigo-100 text-indigo-800"
+              >
+                <svg
+                  class="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  ></path>
+                </svg>
+                {{ getFormValue("canales_venta") }}
+              </span>
+            </div>
+
+            <!-- Frecuencia de Ventas -->
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <label
+                class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3"
+              >
+                Frecuencia de Ventas
+              </label>
+              <span
+                class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-yellow-100 text-yellow-800"
+              >
+                <svg
+                  class="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                  ></path>
+                </svg>
+                {{ getFormValue("frecuencia_ventas") }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Información Personal -->
+      <div *ngIf="activeTab === 3" class="space-y-6 animate-fadeIn">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900 mb-6">
+            Información Personal
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Apoyo Familiar -->
+            <div
+              class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-lg p-6 border border-pink-100"
+            >
+              <label
+                class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3"
+              >
+                Apoyo Familiar
+              </label>
+              <div class="flex items-center">
+                <svg
+                  class="w-8 h-8 text-pink-500 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  ></path>
+                </svg>
+                <span class="text-lg font-semibold text-gray-900">
+                  {{ getFormValue("apoyo_familiar") }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Nivel Educativo -->
+            <div
+              class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-6 border border-blue-100"
+            >
+              <label
+                class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3"
+              >
+                Nivel Educativo
+              </label>
+              <div class="flex items-center">
+                <svg
+                  class="w-8 h-8 text-blue-500 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 14l9-5-9-5-9 5 9 5z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 14v7M5.176 17.032l.896.896M18.928 17.032l-.896.896"
+                  ></path>
+                </svg>
+                <span class="text-lg font-semibold text-gray-900">
+                  {{ getFormValue("nivel_educativo") }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div
+        class="mt-8 flex justify-between items-center pt-6 border-t border-gray-200"
+      >
+        <button
+          type="button"
+          (click)="setActiveTab(activeTab - 1)"
+          [disabled]="activeTab === 0"
+          [class]="
+            activeTab === 0
+              ? 'opacity-50 cursor-not-allowed'
+              : 'hover:bg-gray-100'
+          "
+          class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm transition-colors"
+        >
+          ← Anterior
+        </button>
+
+        <div class="flex space-x-3">
+          <button
+            *ngIf="activeTab < 3"
+            type="button"
+            (click)="setActiveTab(activeTab + 1)"
+            class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors"
+          >
+            Siguiente →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}

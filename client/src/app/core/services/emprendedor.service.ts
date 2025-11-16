@@ -2,6 +2,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -25,4 +26,18 @@ export class EmprendedorService {
   updateEmprendedor(id: number, data: any) {
     return this.http.put(`${this.apiUrl}/emprendedores/${id}`, data, this.authService.getAuthHeaders());
   }
+
+  createEmprendimiento(data: any): Promise<any> {
+    const headers = this.authService.getAuthHeaders();
+    const post = this.http.post(`${this.apiUrl}/emprendedores`, data, headers);
+    return lastValueFrom(post);
+  }
+
+  getEmprendimientoByUser(): Promise<any> {
+    const headers = this.authService.getAuthHeaders();
+    const get = this.http.get(`${this.apiUrl}/emprendedores/mio`, headers);
+    return lastValueFrom(get);
+  }
+
+
 }

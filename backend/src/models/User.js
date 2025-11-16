@@ -37,7 +37,7 @@ export class User {
         email,
         password: hashedPassword,
         nombre,
-        rol: "analista", // 🚨 rol fijo
+        rol: "analista",
       });
 
       const token = jwt.sign(

@@ -8,21 +8,42 @@ import { AuthService } from '../../../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink],
   template: `
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <!-- Header -->
-      <header class="bg-green-600 text-white shadow-sm">
+      <header class="bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between h-16 items-center">
-            <div class="flex items-center">
-              <h1 class="text-xl font-bold">SIMICRO - Mi Negocio</h1>
+          <div class="flex justify-between h-20 items-center">
+            <div class="flex items-center space-x-4">
+              <div class="bg-white bg-opacity-20 rounded-lg p-2">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              <div>
+                <h1 class="text-2xl font-bold">SIMICRO</h1>
+                <p class="text-green-100 text-xs">Mi Negocio</p>
+              </div>
             </div>
             
-            <div class="flex items-center space-x-4">
-              <span class="text-sm">Hola, {{ currentUser()?.nombre }}</span>
+            <div class="flex items-center space-x-6">
+              <div class="flex items-center space-x-3 bg-white bg-opacity-10 rounded-lg px-4 py-2">
+                <div class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">{{ currentUser()?.nombre }}</p>
+                  <p class="text-xs text-green-100">Emprendedor</p>
+                </div>
+              </div>
               <button 
                 (click)="logout()"
-                class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-sm transition-colors">
-                Cerrar Sesión
+                class="bg-red-500 hover:bg-red-600 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg flex items-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+                <span>Cerrar Sesión</span>
               </button>
             </div>
           </div>
@@ -30,23 +51,28 @@ import { AuthService } from '../../../../core/services/auth.service';
       </header>
 
       <!-- Navigation -->
-      <nav class="bg-white shadow-sm">
+      <nav class="bg-white shadow-md border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex space-x-8">
+          <div class="flex space-x-1">
             <a 
               *ngFor="let nav of navigation"
               [routerLink]="nav.path"
-              class="py-4 px-2 border-b-2 border-transparent hover:border-green-500 hover:text-green-500 transition-colors"
-              [class.border-green-500]="isActive(nav.path)"
-              [class.text-green-600]="isActive(nav.path)">
-              {{ nav.name }}
+              class="relative py-4 px-6 text-sm font-medium transition-all duration-200"
+              [ngClass]="{
+                'text-green-600': isActive(nav.path),
+                'text-gray-600 hover:text-green-600': !isActive(nav.path)
+              }">
+              <span class="flex items-center space-x-2">
+                <span>{{ nav.name }}</span>
+              </span>
+              <span *ngIf="isActive(nav.path)" class="absolute bottom-0 left-0 right-0 h-1 bg-green-600 rounded-t-lg"></span>
             </a>
           </div>
         </div>
       </nav>
 
       <!-- Main Content -->
-      <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <router-outlet></router-outlet>
       </main>
     </div>
@@ -54,12 +80,13 @@ import { AuthService } from '../../../../core/services/auth.service';
 })
 export class EmprendedorLayoutComponent {
   currentUser = signal<any>(null);
-  
+
   navigation = [
     { name: 'Dashboard', path: '/emprendedor/dashboard' },
     { name: 'Mi Perfil', path: '/emprendedor/perfil' },
     { name: 'Mis Solicitudes', path: '/emprendedor/solicitudes' },
-    { name: 'Mis Productos', path: '/emprendedor/productos' }
+    { name: 'Mis Productos', path: '/emprendedor/productos' },
+    { name: 'Mis Emprendimientos', path: '/emprendedor/mi-emprendimiento' },
   ];
 
   constructor(

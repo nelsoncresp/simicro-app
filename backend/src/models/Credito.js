@@ -2,41 +2,32 @@ import pool from '../config/database.js';
 
 export class Credito {
   // Crear crédito desde solicitud aprobada
-  static async crearDesdeSolicitud(solicitud) {
+  static async create(data) {
+    const {
+      id_solicitud,
+      monto_desembolsado,
+      tasa_interes = 2.0
+    } = data;
+
     const [result] = await pool.execute(
       `INSERT INTO creditos 
-      (id_solicitud, monto_desembolsado, saldo_pendiente_total, tasa_interes, fecha_desembolso, estado) 
-      VALUES (?, ?, ?, ?, NOW(), 'activo')`,
-      [solicitud.id_solicitud, solicitud.monto_solicitado, solicitud.monto_solicitado, 0.02]
+       (id_solicitud, monto_desembolsado, saldo_pendiente_total, tasa_interes, fecha_desembolso, estado)
+       VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, 'activo')`,
+      [id_solicitud, monto_desembolsado, monto_desembolsado, tasa_interes]
     );
-
-    // Generar cuotas automáticamente
-    const { generarCuotas } = await import('../utils/helpers.js');
-    const cuotas = generarCuotas(solicitud.monto_solicitado, solicitud.plazo_semanas);
-    
-    const { Cuota } = await import('./Cuota.js');
-    for (const cuota of cuotas) {
-      await Cuota.create({
-        id_credito: result.insertId,
-        numero_cuota: cuota.numero,
-        fecha_vencimiento: cuota.fechaVencimiento,
-        monto_esperado: cuota.monto,
-        capital: cuota.capital,
-        interes: cuota.interes,
-        estado: 'pendiente'
-      });
-    }
 
     return this.findById(result.insertId);
   }
 
-  // Buscar por ID
+  // Buscar crédito por ID
   static async findById(id) {
     const [rows] = await pool.execute(
-      `SELECT c.*, s.monto_solicitado, s.plazo_semanas, e.nombre_negocio, u.nombre as nombre_emprendedor
+      `SELECT c.*, 
+              s.id_emprendedor, s.plazo_semanas,
+              e.nombre_emprendimiento, u.nombre, u.email
        FROM creditos c
        INNER JOIN solicitudes s ON c.id_solicitud = s.id_solicitud
-       INNER JOIN emprendedores e ON s.id_emprendedor = e.id_emprendedor
+       INNER JOIN emprendimientos e ON s.id_emprendedor = e.id_emprendimiento
        INNER JOIN usuarios u ON e.id_usuario = u.id_usuario
        WHERE c.id_credito = ?`,
       [id]
@@ -44,48 +35,56 @@ export class Credito {
     return rows[0];
   }
 
-  // Obtener créditos activos
-  static async findActive() {
+  // Buscar créditos por solicitud
+  static async findBySolicitud(id_solicitud) {
     const [rows] = await pool.execute(
-      `SELECT c.*, e.nombre_negocio, u.nombre as nombre_emprendedor
-       FROM creditos c
-       INNER JOIN solicitudes s ON c.id_solicitud = s.id_solicitud
-       INNER JOIN emprendedores e ON s.id_emprendedor = e.id_emprendedor
-       INNER JOIN usuarios u ON e.id_usuario = u.id_usuario
-       WHERE c.estado = 'activo'
-       ORDER BY c.fecha_desembolso DESC`
+      `SELECT * FROM creditos WHERE id_solicitud = ?`,
+      [id_solicitud]
     );
-    return rows;
+    return rows[0];
   }
 
-  // Obtener créditos por emprendedor
-  static async findByEmprendedor(idEmprendedor) {
+  // Obtener créditos activos de un emprendedor
+  static async findByEmprendedor(id_emprendedor) {
     const [rows] = await pool.execute(
       `SELECT c.*, s.plazo_semanas
        FROM creditos c
        INNER JOIN solicitudes s ON c.id_solicitud = s.id_solicitud
-       WHERE s.id_emprendedor = ?
+       WHERE s.id_emprendedor = ? AND c.estado IN ('activo', 'moroso')
        ORDER BY c.fecha_creacion DESC`,
-      [idEmprendedor]
+      [id_emprendedor]
     );
     return rows;
   }
 
-  // Actualizar saldo
-  static async updateSaldo(idCredito, nuevoSaldo) {
+  // Actualizar saldo pendiente
+  static async updateSaldoPendiente(id_credito, nuevoSaldo) {
     await pool.execute(
-      'UPDATE creditos SET saldo_pendiente_total = ? WHERE id_credito = ?',
-      [nuevoSaldo, idCredito]
+      `UPDATE creditos SET saldo_pendiente_total = ? WHERE id_credito = ?`,
+      [nuevoSaldo, id_credito]
     );
-    return this.findById(idCredito);
   }
 
-  // Cambiar estado
-  static async updateEstado(idCredito, estado) {
+  // Actualizar estado del crédito
+  static async updateEstado(id_credito, estado) {
     await pool.execute(
-      'UPDATE creditos SET estado = ? WHERE id_credito = ?',
-      [estado, idCredito]
+      `UPDATE creditos SET estado = ? WHERE id_credito = ?`,
+      [estado, id_credito]
     );
-    return this.findById(idCredito);
+  }
+
+  // Obtener todos los créditos del usuario
+  static async findByUsuario(id_usuario) {
+    const [rows] = await pool.execute(
+      `SELECT c.*, e.nombre_emprendimiento, s.plazo_semanas
+       FROM creditos c
+       INNER JOIN solicitudes s ON c.id_solicitud = s.id_solicitud
+       INNER JOIN emprendimientos e ON s.id_emprendedor = e.id_emprendimiento
+       INNER JOIN usuarios u ON e.id_usuario = u.id_usuario
+       WHERE u.id_usuario = ? AND c.estado IN ('activo', 'moroso')
+       ORDER BY c.fecha_creacion DESC`,
+      [id_usuario]
+    );
+    return rows;
   }
 }
