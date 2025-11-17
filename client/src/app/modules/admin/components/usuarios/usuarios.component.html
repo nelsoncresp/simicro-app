@@ -1,1 +1,82 @@
-<p>usuarios works!</p>
+<div class="p-6">
+
+  <!-- Título -->
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Gestión de Usuarios</h2>
+
+  <!-- Resumen -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="p-4 rounded-xl bg-blue-50 border border-blue-200">
+      <p class="text-sm text-gray-600">Total Usuarios</p>
+      <p class="text-3xl font-bold text-blue-700 mt-1">{{ resumen.total }}</p>
+    </div>
+
+    <div class="p-4 rounded-xl bg-purple-50 border border-purple-200">
+      <p class="text-sm text-gray-600">Administradores</p>
+      <p class="text-3xl font-bold text-purple-700 mt-1">{{ resumen.admins }}</p>
+    </div>
+
+    <div class="p-4 rounded-xl bg-amber-50 border border-amber-200">
+      <p class="text-sm text-gray-600">Analistas</p>
+      <p class="text-3xl font-bold text-amber-700 mt-1">{{ resumen.analistas }}</p>
+    </div>
+
+    <div class="p-4 rounded-xl bg-green-50 border border-green-200">
+      <p class="text-sm text-gray-600">Emprendedores</p>
+      <p class="text-3xl font-bold text-green-700 mt-1">{{ resumen.emprendedores }}</p>
+    </div>
+  </div>
+
+  <!-- Buscador -->
+  <div class="mb-6">
+    <input
+      type="text"
+      [(ngModel)]="search"
+      (input)="filtrar()"
+      placeholder="Buscar por nombre, email o rol..."
+      class="w-full p-3 border rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-400"
+    />
+  </div>
+
+  <!-- Tabla -->
+  <div class="overflow-x-auto bg-white rounded-xl shadow border">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-100 border-b">
+        <tr>
+          <th class="p-4 text-left">ID</th>
+          <th class="p-4 text-left">Nombre</th>
+          <th class="p-4 text-left">Email</th>
+          <th class="p-4 text-left">Rol</th>
+          <th class="p-4 text-left">Fecha Registro</th>
+          <th class="p-4 text-center">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let u of filtered" class="border-b hover:bg-gray-50">
+          <td class="p-4">{{ u.id_usuario }}</td>
+          <td class="p-4 font-medium">{{ u.nombre }}</td>
+          <td class="p-4">{{ u.email }}</td>
+          <td class="p-4 capitalize">{{ u.rol }}</td>
+          <td class="p-4">{{ u.fecha_creacion | date:'mediumDate' }}</td>
+
+          <!-- Botones fake -->
+          <td class="p-4 text-center flex gap-2 justify-center">
+            <button
+              (click)="editarUsuario(u.id_usuario)"
+              class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200"
+            >
+              Editar
+            </button>
+            <button
+              (click)="eliminarUsuario(u.id_usuario)"
+              class="px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+            >
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

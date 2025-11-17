@@ -1,0 +1,95 @@
+<div class="p-6">
+
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">
+    Solicitudes de Crédito
+  </h2>
+
+  <!-- RESUMEN -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+
+    <div class="p-4 bg-white shadow rounded-lg border border-gray-200">
+      <p class="text-gray-500 text-sm">Total solicitudes</p>
+      <p class="text-xl font-semibold mt-1">{{ resumen.total }}</p>
+    </div>
+
+    <div class="p-4 bg-green-50 shadow rounded-lg border border-green-200">
+      <p class="text-gray-500 text-sm">Activas</p>
+      <p class="text-xl font-semibold mt-1 text-green-700">{{ resumen.activas }}</p>
+    </div>
+
+    <div class="p-4 bg-yellow-50 shadow rounded-lg border border-yellow-200">
+      <p class="text-gray-500 text-sm">Pre-aprobadas</p>
+      <p class="text-xl font-semibold mt-1 text-yellow-700">{{ resumen.preAprobadas }}</p>
+    </div>
+
+    <div class="p-4 bg-red-50 shadow rounded-lg border border-red-200">
+      <p class="text-gray-500 text-sm">Rechazadas</p>
+      <p class="text-xl font-semibold mt-1 text-red-700">{{ resumen.rechazadas }}</p>
+    </div>
+
+  </div>
+
+  <!-- BUSCADOR -->
+  <div class="mb-6">
+    <input
+      type="text"
+      placeholder="Buscar por emprendedor, negocio o estado..."
+      [(ngModel)]="search"
+      (input)="filtrar()"
+      class="w-full p-3 border rounded-lg shadow-sm focus:outline-blue-500"
+    >
+  </div>
+
+  <!-- TABLA -->
+  <div class="overflow-x-auto shadow rounded-lg border border-gray-200 bg-white">
+    <table class="min-w-full text-left text-sm">
+      <thead class="bg-gray-100 text-gray-700 font-semibold">
+        <tr>
+          <th class="p-3">ID</th>
+          <th class="p-3">Emprendedor</th>
+          <th class="p-3">Negocio</th>
+          <th class="p-3">Monto</th>
+          <th class="p-3">Plazo</th>
+          <th class="p-3">Estado</th>
+          <th class="p-3">Fecha solicitud</th>
+          <th class="p-3 text-center">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let s of filtered" class="border-b">
+          <td class="p-3">{{ s.id_solicitud }}</td>
+          <td class="p-3 font-medium">{{ s.nombre_emprendedor }}</td>
+          <td class="p-3">{{ s.nombre_negocio }}</td>
+          <td class="p-3">{{ s.monto_solicitado | currency:'USD' }}</td>
+          <td class="p-3">{{ s.plazo_semanas }} semanas</td>
+
+          <td class="p-3">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                  [ngClass]="getEstadoClass(s.estado)">
+              {{ s.estado }}
+            </span>
+          </td>
+
+          <td class="p-3">{{ s.fecha_solicitud | date:'medium' }}</td>
+
+          <td class="p-3 text-center flex gap-3 justify-center">
+            <button
+              class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200"
+              (click)="editar(s.id_solicitud)">
+              ✏️
+            </button>
+
+            <button
+              class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200"
+              (click)="eliminar(s.id_solicitud)">
+              🗑️
+            </button>
+          </td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+</div>

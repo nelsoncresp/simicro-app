@@ -17,6 +17,10 @@ export const ADMIN_ROUTES: Routes = [
         path: 'usuarios',
         loadComponent: () => import('./components/usuarios/usuarios.component').then(m => m.UsuariosComponent)
       },
+      {
+        path: 'solicitudes',
+        loadComponent: () => import('./components/solicitudes/solicitudes.component').then(m => m.SolicitudesComponent )
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

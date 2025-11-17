@@ -1,1 +1,77 @@
-<p>emprendedores works!</p>
+<div class="p-6">
+
+  <!-- Título -->
+  <h1 class="text-3xl font-bold text-gray-800 mb-1">Emprendedores</h1>
+  <p class="text-gray-500 mb-6">
+    Gestión y consulta de todos los emprendimientos registrados en el sistema.
+  </p>
+
+  <!-- Cards de resumen -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+    <div class="bg-white shadow rounded-xl p-6 border border-gray-100">
+      <p class="text-gray-600 text-sm">Total Emprendimientos</p>
+      <h2 class="text-3xl font-bold text-blue-600 mt-2">{{ filtered.length }}</h2>
+    </div>
+
+    <div class="bg-white shadow rounded-xl p-6 border border-gray-100">
+      <p class="text-gray-600 text-sm">Ingresos Totales</p>
+      <h2 class="text-2xl font-bold text-green-600 mt-2">
+        {{ totalIngresos() | currency:'USD':'symbol':'1.0-0' }}
+      </h2>
+    </div>
+
+    <div class="bg-white shadow rounded-xl p-6 border border-gray-100">
+      <p class="text-gray-600 text-sm">Utilidad Total</p>
+      <h2 class="text-2xl font-bold text-purple-600 mt-2">
+        {{ totalUtilidad() | currency:'USD':'symbol':'1.0-0' }}
+      </h2>
+    </div>
+
+  </div>
+
+  <!-- Buscador -->
+  <div class="mb-6">
+    <input
+      type="text"
+      [(ngModel)]="filtro"
+      (input)="filtrar()"
+      class="w-full md:w-1/2 px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+      placeholder="Buscar por nombre, emprendedor o email..."
+    >
+  </div>
+
+  <!-- Tabla -->
+  <div class="bg-white shadow rounded-xl border border-gray-100 overflow-hidden">
+    <table class="min-w-full text-left">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="px-6 py-3 text-gray-600 text-sm font-semibold">Emprendimiento</th>
+          <th class="px-6 py-3 text-gray-600 text-sm font-semibold">Dueño</th>
+          <th class="px-6 py-3 text-gray-600 text-sm font-semibold">Ingresos</th>
+          <th class="px-6 py-3 text-gray-600 text-sm font-semibold">Utilidad</th>
+          <th class="px-6 py-3 text-gray-600 text-sm font-semibold">Fecha Registro</th>
+          <th class="px-6 py-3 text-gray-600 text-sm font-semibold">Email</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let e of filtered" class="border-b hover:bg-gray-50 transition">
+          <td class="px-6 py-4 font-medium text-gray-800">{{ e.nombre_emprendimiento }}</td>
+          <td class="px-6 py-4">{{ e.nombre_completo }}</td>
+          <td class="px-6 py-4 text-green-600 font-medium">
+            {{ e.ingresos_mensuales | currency }}
+          </td>
+          <td class="px-6 py-4 text-blue-600 font-medium">
+            {{ e.utilidad_neta | currency }}
+          </td>
+          <td class="px-6 py-4">{{ e.fecha_registro | date:'mediumDate' }}</td>
+          <td class="px-6 py-4">{{ e.email }}</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+</div>
