@@ -157,8 +157,8 @@ export class AuthController {
 
       // Si es emprendedor, traer datos adicionales
       if (req.user.rol === "emprendedor") {
-        const { Emprendedor } = await import("../models/Emprendedor.js");
-        const emprendedor = await Emprendedor.findByUserId(req.user.id_usuario);
+        const { Emprendimiento } = await import("../models/Emprendedor.js");
+        const emprendedor = await Emprendimiento.findByUserId(req.user.id_usuario);
         profile.emprendedor = emprendedor;
       }
 

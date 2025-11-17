@@ -73,6 +73,23 @@ export class Credito {
     );
   }
 
+  // Actualizar mora acumulada del crédito
+  static async updateMoraAcumulada(id_credito, mora_acumulada) {
+    await pool.execute(
+      `UPDATE creditos SET mora_acumulada = ? WHERE id_credito = ?`,
+      [mora_acumulada, id_credito]
+    );
+  }
+
+  // Obtener mora acumulada
+  static async getMoraAcumulada(id_credito) {
+    const [rows] = await pool.execute(
+      `SELECT mora_acumulada FROM creditos WHERE id_credito = ?`,
+      [id_credito]
+    );
+    return rows[0]?.mora_acumulada || 0;
+  }
+
   // Obtener todos los créditos del usuario
   static async findByUsuario(id_usuario) {
     const [rows] = await pool.execute(

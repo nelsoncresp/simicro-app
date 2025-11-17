@@ -94,6 +94,7 @@ CREATE TABLE creditos (
     monto_desembolsado DECIMAL(12,2) NOT NULL,
     saldo_pendiente_total DECIMAL(12,2) NOT NULL,
     tasa_interes DECIMAL(5,2) DEFAULT 2.0,
+    mora_acumulada DECIMAL(10,2) DEFAULT 0,
     fecha_desembolso TIMESTAMP NULL,
     fecha_vencimiento DATE NULL,
     estado ENUM('activo', 'pagado', 'moroso', 'cancelado') DEFAULT 'activo',

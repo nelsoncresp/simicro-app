@@ -14,7 +14,6 @@ export class DetalleUsuario {
       departamento,
       estado_civil
     } = data;
-
     const query = `
       INSERT INTO detalle_usuarios (
         id_usuario, tipo_documento, numero_documento, fecha_nacimiento,

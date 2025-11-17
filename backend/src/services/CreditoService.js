@@ -95,17 +95,44 @@ export class CreditoService {
   }
 
   /**
-   * Obtener resumen completo de crédito
+   * Calcular mora total de un crédito y actualizar en BD
+   */
+  static async calcularYActualizarMoraCredito(id_credito) {
+    const cuotas = await this.obtenerCalendarioPagos(id_credito);
+    let totalMora = 0;
+
+    cuotas.forEach(cuota => {
+      if (cuota.estado !== 'pagada') {
+        const diasMora = this.calcularMora(cuota.fecha_vencimiento);
+        const montoPendiente = cuota.monto_esperado - (cuota.monto_pagado || 0);
+
+        if (diasMora > 0) {
+          const multaMora = this.calcularMultaMora(montoPendiente, diasMora);
+          totalMora += multaMora;
+        }
+      }
+    });
+
+    // Actualizar mora en tabla creditos
+    await Credito.updateMoraAcumulada(id_credito, Math.round(totalMora * 100) / 100);
+    
+    return Math.round(totalMora * 100) / 100;
+  }
+
+  /**
+   * Obtener resumen completo de crédito (actualiza mora antes de retornar)
    */
   static async obtenerResumenCredito(id_credito) {
     const credito = await Credito.findById(id_credito);
     if (!credito) return null;
 
+    // Calcular y actualizar mora
+    const totalMora = await this.calcularYActualizarMoraCredito(id_credito);
+
     const cuotas = await this.obtenerCalendarioPagos(id_credito);
 
     let totalPagado = 0;
     let totalPendiente = 0;
-    let totalMora = 0;
     let cuotasConMora = [];
 
     cuotas.forEach(cuota => {
@@ -119,7 +146,6 @@ export class CreditoService {
 
         if (diasMora > 0) {
           const multaMora = this.calcularMultaMora(montoPendiente, diasMora);
-          totalMora += multaMora;
           cuotasConMora.push({
             numero_cuota: cuota.numero_cuota,
             fecha_vencimiento: cuota.fecha_vencimiento,
