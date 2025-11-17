@@ -31,7 +31,7 @@ export class Solicitud {
       `SELECT s.*, 
               e.nombre_emprendimiento AS nombre_negocio,
               e.ingresos_mensuales, e.gastos_mensuales, e.utilidad_neta, e.tiempo_funcionamiento,
-              u.nombre AS nombre_emprendedor, u.email
+              u.id_usuario, u.nombre AS nombre_emprendedor, u.email
        FROM solicitudes s
        INNER JOIN emprendimientos e ON s.id_emprendedor = e.id_emprendimiento
        INNER JOIN usuarios u ON e.id_usuario = u.id_usuario

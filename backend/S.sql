@@ -152,3 +152,21 @@ CREATE TABLE pagos (
     
     FOREIGN KEY (id_cuota) REFERENCES cuotas(id_cuota) ON DELETE CASCADE
 );
+
+-- =========================================================
+-- 009 - Notificaciones SMS
+-- =========================================================
+CREATE TABLE notificaciones (
+    id_notificacion INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT NOT NULL,
+    id_solicitud INT,
+    tipo ENUM('aprobado', 'rechazado', 'pago_recibido', 'mora', 'otro') NOT NULL,
+    mensaje TEXT NOT NULL,
+    estado_envio ENUM('pendiente', 'enviado', 'fallido') DEFAULT 'pendiente',
+    telefono VARCHAR(20),
+    leida BOOLEAN DEFAULT FALSE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    FOREIGN KEY (id_solicitud) REFERENCES solicitudes(id_solicitud) ON DELETE SET NULL
+);

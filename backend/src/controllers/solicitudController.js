@@ -3,6 +3,7 @@ import { Solicitud } from '../models/Solicitud.js';
 import { Credito } from '../models/Credito.js';
 import { Emprendimiento } from '../models/Emprendedor.js';
 import { CreditoService } from '../services/CreditoService.js';
+import { NotificacionService } from '../services/NotificacionService.js';
 import { success, error } from '../utils/responses.js';
 import { calcularRatio, generarCuotas } from '../utils/helpers.js';
 
@@ -154,7 +155,7 @@ export class SolicitudController {
     }
   }
 
-  // 🔄 Decidir solicitud (solo Analista) - Ahora crea crédito si aprueba
+  // 🔄 Decidir solicitud (solo Analista) - Ahora crea crédito si aprueba y ENVÍA SMS
   static async decidirSolicitud(req, res) {
     try {
       const { id } = req.params;
@@ -192,17 +193,41 @@ export class SolicitudController {
         // 4️⃣ Actualizar solicitud a estado 'activo'
         await Solicitud.updateEstado(id, 'activo');
 
+        // 5️⃣ ✨ ENVIAR NOTIFICACIÓN DE APROBACIÓN
+        await NotificacionService.enviarSmsAprobacion(
+          solicitud.id_usuario,
+          id,
+          solicitud.nombre_emprendedor,
+          solicitud.nombre_negocio,
+          solicitud.monto_solicitado,
+          solicitud.plazo_semanas
+        );
+
         success(res, 
           { 
             solicitud: { id, estado: 'aprobado' }, 
-            credito: nuevoCredito 
+            credito: nuevoCredito,
+            sms: '✓ Notificación guardada'
           }, 
-          'Solicitud aprobada y crédito creado exitosamente'
+          'Solicitud aprobada, crédito creado y notificación registrada'
         );
       } else {
         // Rechazar
         await Solicitud.decidirSolicitud(id, 'rechazar');
-        success(res, { id, estado: 'rechazado' }, 'Solicitud rechazada');
+
+        // ✨ ENVIAR NOTIFICACIÓN DE RECHAZO
+        await NotificacionService.enviarSmsRechazo(
+          solicitud.id_usuario,
+          id,
+          solicitud.nombre_emprendedor,
+          solicitud.nombre_negocio,
+          solicitud.motivo_decision || 'Evaluación de riesgo'
+        );
+
+        success(res, 
+          { id, estado: 'rechazado', sms: '✓ Notificación guardada' }, 
+          'Solicitud rechazada y notificación registrada'
+        );
       }
     } catch (err) {
       console.error('Error decidiendo solicitud:', err);

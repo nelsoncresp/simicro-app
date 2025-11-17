@@ -13,14 +13,31 @@ export class Cuota {
     return this.findById(result.insertId);
   }
 
-  // Buscar por ID
-  static async findById(id) {
+  // Obtener cuotas por usuario
+  static async findByUsuario(id_usuario) {
     const [rows] = await pool.execute(
-      `SELECT c.*, cr.id_credito, s.id_emprendedor, e.nombre_negocio
+      `SELECT c.*, cr.id_credito, cr.monto_desembolsado, cr.mora_acumulada,
+              s.id_solicitud, s.monto_solicitado,
+              e.nombre_emprendimiento,
+              u.nombre AS nombre_emprendedor
        FROM cuotas c
        INNER JOIN creditos cr ON c.id_credito = cr.id_credito
        INNER JOIN solicitudes s ON cr.id_solicitud = s.id_solicitud
-       INNER JOIN emprendedores e ON s.id_emprendedor = e.id_emprendedor
+       INNER JOIN emprendimientos e ON s.id_emprendedor = e.id_emprendimiento
+       INNER JOIN usuarios u ON e.id_usuario = u.id_usuario
+       WHERE u.id_usuario = ?
+       ORDER BY c.fecha_vencimiento ASC`,
+      [id_usuario]
+    );
+    return rows;
+  }
+
+  // Buscar por ID
+  static async findById(id) {
+    const [rows] = await pool.execute(
+      `SELECT c.*, cr.id_credito, cr.monto_desembolsado
+       FROM cuotas c
+       INNER JOIN creditos cr ON c.id_credito = cr.id_credito
        WHERE c.id_cuota = ?`,
       [id]
     );
@@ -28,13 +45,51 @@ export class Cuota {
   }
 
   // Obtener cuotas por crédito
-  static async findByCredito(idCredito) {
+  static async findByCredito(id_credito) {
     const [rows] = await pool.execute(
-      `SELECT c.* 
-       FROM cuotas c 
-       WHERE c.id_credito = ? 
-       ORDER BY c.numero_cuota`,
-      [idCredito]
+      `SELECT * FROM cuotas WHERE id_credito = ? ORDER BY numero_cuota ASC`,
+      [id_credito]
+    );
+    return rows;
+  }
+
+  // Actualizar monto pagado
+  static async updateMontoPagado(id_cuota, monto_pagado, estado) {
+    await pool.execute(
+      `UPDATE cuotas 
+       SET monto_pagado = ?, estado = ?, fecha_pago = CURRENT_TIMESTAMP
+       WHERE id_cuota = ?`,
+      [monto_pagado, estado, id_cuota]
+    );
+  }
+
+  // Obtener cuota con historial de pagos
+  static async findByIdConPagos(id_cuota) {
+    const cuota = await this.findById(id_cuota);
+    if (!cuota) return null;
+
+    const [pagos] = await pool.execute(
+      `SELECT * FROM pagos WHERE id_cuota = ? ORDER BY fecha_pago DESC`,
+      [id_cuota]
+    );
+
+    return { ...cuota, pagos };
+  }
+
+  // Obtener cuotas pendientes por usuario
+  static async findPendientesByUsuario(id_usuario) {
+    const [rows] = await pool.execute(
+      `SELECT c.*, cr.id_credito, cr.monto_desembolsado, cr.mora_acumulada,
+              e.nombre_emprendimiento,
+              u.nombre AS nombre_emprendedor
+       FROM cuotas c
+       INNER JOIN creditos cr ON c.id_credito = cr.id_credito
+       INNER JOIN solicitudes s ON cr.id_solicitud = s.id_solicitud
+       INNER JOIN emprendimientos e ON s.id_emprendedor = e.id_emprendimiento
+       INNER JOIN usuarios u ON e.id_usuario = u.id_usuario
+       WHERE u.id_usuario = ? AND c.estado IN ('pendiente', 'vencida')
+       ORDER BY c.fecha_vencimiento ASC`,
+      [id_usuario]
     );
     return rows;
   }
@@ -68,7 +123,7 @@ export class Cuota {
   }
 
   // Registrar pago de cuota
-  static async registrarPago(idCuota, montoPagado, metodoPago = 'efectivo') {
+  static async registrarPago(idCuota, montoPagado, metodoPago = 'efectivo',referencia_pago, observaciones=null) {
     const connection = await pool.getConnection();
     
     try {
@@ -84,9 +139,9 @@ export class Cuota {
 
       // 2. Registrar en tabla pagos
       await connection.execute(
-        `INSERT INTO pagos (id_cuota, monto_recibido, metodo_pago) 
-         VALUES (?, ?, ?)`,
-        [idCuota, montoPagado, metodoPago]
+        `INSERT INTO pagos (id_cuota, monto_recibido, metodo_pago,referencia_pago, observaciones) 
+         VALUES (?, ?, ?,?,?)`,
+        [idCuota, montoPagado, metodoPago,referencia_pago, observaciones]
       );
 
       // 3. Actualizar saldo del crédito

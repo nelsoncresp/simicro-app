@@ -26,7 +26,9 @@ export class PagoController {
       const cuotaActualizada = await Cuota.registrarPago(
         id_cuota, 
         parseFloat(monto_recibido), 
-        metodo_pago || 'efectivo'
+        metodo_pago || 'efectivo',
+        referencia_pago,
+        observaciones 
       );
 
       success(res, { cuota: cuotaActualizada }, 'Pago registrado exitosamente');

@@ -6,7 +6,7 @@ import { requireAdminOrAnalyst } from '../middleware/role.js';
 const router = Router();
 
 router.use(authenticate);
-router.use(requireAdminOrAnalyst); // Solo analistas y admin pueden manejar pagos
+
 
 /**
  * @swagger
