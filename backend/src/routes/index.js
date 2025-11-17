@@ -9,11 +9,13 @@ import dashboardRoutes from './dashboard.routes.js';
 import detalleUsuarioRoutes from './detalleUsuarioRoutes.js';
 import cuotaRoutes from './cuota.routes.js';
 import morgan from 'morgan';
+import notificacionesRoutes from './notificacion.routes.js';
 const router = Router();
 
 // Configurar rutas
 router.use(morgan('dev'));
 
+router.use('/notificaciones', notificacionesRoutes);
 router.use('/cuotas', cuotaRoutes);
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);

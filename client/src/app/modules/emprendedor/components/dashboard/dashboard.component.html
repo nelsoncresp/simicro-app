@@ -1,93 +1,142 @@
-<!-- src/app/modules/emprendedor/components/dashboard/dashboard.component.html -->
+<div class="min-h-screen py-12 px-6">
+  <div class="max-w-5xl mx-auto">
+
+  <!-- 🌼 HERO DE BIENVENIDA -->
 <div
-  class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8"
+  class="rounded-3xl shadow-md p-10 border border-[#F3D9A4] mb-12 flex flex-col md:flex-row gap-10 items-center"
+  style="background: linear-gradient(135deg, #FFF8E6, #FFFDF8);"
 >
-  <div class="max-w-7xl mx-auto">
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 mb-2">
-        Dashboard Emprendedor
-      </h1>
-      <p class="text-gray-600">
-        Bienvenido, aquí puedes ver el resumen de tus solicitudes
-      </p>
+
+  <div class="flex-1 space-y-5">
+
+    <!-- 👋 Mano saludando -->
+    <div class="text-4xl">👋</div>
+
+    <h1 class="text-4xl font-semibold text-gray-900 leading-snug">
+      Bienvenido de vuelta, {{ nombreUsuario }}
+    </h1>
+
+    <p *ngIf="nombreEmprendimiento" class="text-lg text-gray-700">
+      Tu emprendimiento <span class="text-[#0B8A43] font-semibold">{{ nombreEmprendimiento }}</span> sigue avanzando.
+    </p>
+
+    <p class="text-gray-600 text-base leading-relaxed max-w-lg">
+      Estamos aquí para ayudarte a impulsar tu negocio con soluciones financieras claras y accesibles.
+      En este espacio podrás revisar tus notificaciones, avances y consejos prácticos para continuar
+      fortaleciendo tu camino como emprendedor.
+    </p>
+  </div>
+
+  <!-- 🌱 Plantica única -->
+  <div class="text-8xl md:text-9xl">
+    🌱
+  </div>
+</div>
+
+
+<!-- CONTENEDOR GENERAL LUEGO DEL HERO -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+  <!-- 🪴 CONSEJOS - IZQUIERDA -->
+  <div class="lg:col-span-2 bg-white rounded-3xl shadow-md p-8 border border-[#F3D9A4]">
+
+    <div class="flex items-center gap-3 mb-8">
+      <i class="bi bi-lightbulb text-[#D18A00] text-3xl"></i>
+      <h2 class="text-2xl font-medium text-gray-900">Consejos para seguir creciendo</h2>
     </div>
 
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-      @for (stat of stats; track stat.title) {
-      <div
-        class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-6 border border-gray-100"
-      >
-        <div class="flex items-center justify-between">
-          <div class="flex-1">
-            <p class="text-sm font-medium text-gray-600 mb-1">
-              {{ stat.title }}
-            </p>
-            <p class="text-3xl font-bold text-gray-900">{{ stat.value }}</p>
-          </div>
-          <div class="ml-4 text-4xl opacity-80">
-            {{ stat.icon }}
-          </div>
-        </div>
-        <div class="mt-4 pt-4 border-t border-gray-100">
-          <div
-            class="h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
-          ></div>
-        </div>
-      </div>
-      }
-    </div>
+    <div class="grid md:grid-cols-2 gap-6">
 
-    <!-- Actividad Reciente -->
-    <div
-      class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
-    >
-      <div
-        class="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50"
-      >
-        <div class="flex items-center">
-          <svg
-            class="w-6 h-6 text-blue-600 mr-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
-          <h2 class="text-xl font-semibold text-gray-900">
-            Actividad Reciente
-          </h2>
-        </div>
-      </div>
-      <div class="p-6">
-        <div class="text-center py-12">
-          <svg
-            class="mx-auto h-12 w-12 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            ></path>
-          </svg>
-          <h3 class="mt-2 text-sm font-medium text-gray-900">
-            Sin actividad reciente
-          </h3>
-          <p class="mt-1 text-sm text-gray-500">
-            Aquí aparecerá el historial de tus solicitudes cuando las tengas.
+      <!-- Consejo 1 -->
+      <div class="p-6 bg-white border border-[#F3D9A4] rounded-2xl shadow-sm hover:shadow transition flex gap-4 items-start">
+        <i class="bi bi-graph-up text-[#0B8A43] text-3xl"></i>
+        <div class="space-y-2">
+          <p class="text-gray-900 text-lg">Organiza tu flujo financiero</p>
+          <p class="text-gray-700 text-sm leading-relaxed">
+            Conocer tus ingresos y gastos ayuda a tomar decisiones más seguras.
           </p>
         </div>
       </div>
+
+      <!-- Consejo 2 -->
+      <div class="p-6 bg-white border border-[#F3D9A4] rounded-2xl shadow-sm hover:shadow transition flex gap-4 items-start">
+        <i class="bi bi-phone text-[#0B8A43] text-3xl"></i>
+        <div class="space-y-2">
+          <p class="text-gray-900 text-lg">Refuerza tu presencia digital</p>
+          <p class="text-gray-700 text-sm leading-relaxed">
+            Una buena imagen genera confianza y atrae más clientes.
+          </p>
+        </div>
+      </div>
+
+      <!-- Consejo 3 -->
+      <div class="p-6 bg-white border border-[#F3D9A4] rounded-2xl shadow-sm hover:shadow transition flex gap-4 items-start">
+        <i class="bi bi-emoji-smile text-[#0B8A43] text-3xl"></i>
+        <div class="space-y-2">
+          <p class="text-gray-900 text-lg">Cuida la experiencia del cliente</p>
+          <p class="text-gray-700 text-sm leading-relaxed">
+            Los detalles marcan la diferencia entre un cliente ocasional y uno fiel.
+          </p>
+        </div>
+      </div>
+
+      <!-- Consejo 4 -->
+      <div class="p-6 bg-white border border-[#F3D9A4] rounded-2xl shadow-sm hover:shadow transition flex gap-4 items-start">
+        <i class="bi bi-clock-history text-[#D18A00] text-3xl"></i>
+        <div class="space-y-2">
+          <p class="text-gray-900 text-lg">Organiza tu tiempo</p>
+          <p class="text-gray-700 text-sm leading-relaxed">
+            Unos minutos para planear tu día te ayudan a avanzar con calma.
+          </p>
+        </div>
+      </div>
+
     </div>
   </div>
+
+
+
+  <!-- 🔔 NOTIFICACIONES - DERECHA (SIDEBAR) -->
+  <div class="bg-white rounded-3xl shadow-md p-8 border border-[#F3D9A4] h-max sticky top-8">
+
+    <div class="flex items-center gap-3 mb-6">
+      <i class="bi bi-bell-fill text-[#0B8A43] text-2xl"></i>
+      <h2 class="text-xl font-medium text-gray-900">Notificaciones</h2>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-gray-600 text-center py-8">
+      Cargando notificaciones...
+    </div>
+
+    <!-- Sin notificaciones -->
+    <div *ngIf="!loading && notificaciones.length === 0" class="text-center py-8 space-y-3">
+      <i class="bi bi-bell-slash text-gray-500 text-5xl"></i>
+      <p class="text-gray-700 text-base">No tienes notificaciones pendientes.</p>
+      <p class="text-gray-500 text-xs">
+        Te avisaremos cuando haya novedades sobre tu solicitud.
+      </p>
+    </div>
+
+    <!-- Lista -->
+    <div *ngIf="!loading && notificaciones.length > 0" class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+
+      <div
+        *ngFor="let n of notificaciones"
+        class="p-5 rounded-xl bg-white border border-[#F3D9A4] shadow-sm hover:shadow transition"
+      >
+        <p class="text-gray-900 text-sm font-medium">{{ n.titulo || 'Notificación' }}</p>
+        <p class="text-gray-700 text-xs mt-1">
+          {{ n.mensaje || n.descripcion }}
+        </p>
+        <p class="text-[10px] text-gray-500 mt-2">
+          {{ n.created_at | date:'short' }}
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
 </div>
