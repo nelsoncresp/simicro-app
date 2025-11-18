@@ -104,4 +104,12 @@ export class Credito {
     );
     return rows;
   }
+  static async findActive() {
+  const [rows] = await pool.execute(
+    `SELECT * FROM creditos WHERE estado = 'activo'`
+  );
+  return rows;
+}
+
+
 }

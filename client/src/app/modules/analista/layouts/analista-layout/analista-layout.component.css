@@ -1,10 +1,5 @@
-/* src/app/modules/analista/layouts/analista-layout/analista-layout.component.css */
-/* Estilos para el estado activo del routerLink */
 a.active {
-  background-color: rgba(255, 255, 255, 0.2) !important;
+  background-color: #e0e7ff !important; /* Indigo-100 */
+  color: #4338ca !important;           /* Indigo-700 */
   font-weight: 600;
-}
-
-a.active span:last-child {
-  opacity: 1 !important;
 }

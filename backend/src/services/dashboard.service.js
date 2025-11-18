@@ -1,128 +1,143 @@
-import { Solicitud } from '../models/Solicitud.js';
-import { Credito } from '../models/Credito.js';
-import { Pago } from '../models/Pago.js';
-import { Mora } from '../models/Mora.js';
-import { Emprendimiento } from '../models/Emprendedor.js';
+import pool from '../config/database.js';
 
 export class DashboardService {
-  // Obtener métricas generales para admin
+
   static async getMetricasGenerales() {
     try {
-      // Total de solicitudes por estado
-      const solicitudesPendientes = await Solicitud.findAll({ estado: 'pendiente' });
-      const solicitudesPreAprobadas = await Solicitud.findAll({ estado: 'pre-aprobado' });
-      const solicitudesAprobadas = await Solicitud.findAll({ estado: 'aprobado' });
 
-      // Créditos activos
-      const creditosActivos = await Credito.findActive();
+      // 1️⃣ Total usuarios
+      const [users] = await pool.execute(`SELECT COUNT(*) AS total FROM usuarios`);
+      const totalUsuarios = users[0].total;
 
-      // Total de pagos del mes
-      const hoy = new Date();
-      const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-      const ultimoDiaMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
-      
-      const pagosMes = await Pago.findByFecha(
-        primerDiaMes.toISOString().split('T')[0],
-        ultimoDiaMes.toISOString().split('T')[0]
+      // 2️⃣ Usuarios activos: campo activo = 1
+      const [activos] = await pool.execute(`
+        SELECT COUNT(*) AS total 
+        FROM usuarios 
+        WHERE activo = 1
+      `);
+      const usuariosActivos = activos[0].total;
+
+      // 3️⃣ Solicitudes estados
+      const [sPend] = await pool.execute(`SELECT COUNT(*) AS total FROM solicitudes WHERE estado = 'pendiente'`);
+      const [sPre]  = await pool.execute(`SELECT COUNT(*) AS total FROM solicitudes WHERE estado = 'pre-aprobado'`);
+      const [sApr]  = await pool.execute(`SELECT COUNT(*) AS total FROM solicitudes WHERE estado = 'activo'`);
+
+      const solicitudesPendientes = sPend[0].total;
+      const solicitudesPreAprobadas = sPre[0].total;
+      const solicitudesAprobadas = sApr[0].total;
+
+      const totalSolicitudes = solicitudesPendientes + solicitudesPreAprobadas + solicitudesAprobadas;
+
+      // 4️⃣ Créditos
+      const [creditos] = await pool.execute(`SELECT * FROM creditos`);
+      const [creditosActivosRows] = await pool.execute(`SELECT * FROM creditos WHERE estado = 'activo'`);
+
+      const totalCreditos = creditos.length;
+      const creditosActivos = creditosActivosRows.length;
+
+      // 5️⃣ Cartera activa
+      const montoTotal = creditosActivosRows.reduce(
+        (sum, cr) => sum + Number(cr.saldo_pendiente_total), 0
       );
 
-      // Resumen de moras
-      const morasActivas = await Mora.findActivas();
+      // 6️⃣ Pagos vencidos → cuotas vencidas
+      const [vencidas] = await pool.execute(`
+        SELECT COUNT(*) AS total 
+        FROM cuotas 
+        WHERE estado = 'vencida'
+      `);
+      const pagosVencidos = vencidas[0].total;
 
-      // Calcular métricas
-      const totalSolicitudes = solicitudesPendientes.length + solicitudesPreAprobadas.length + solicitudesAprobadas.length;
-      const totalCartera = creditosActivos.reduce((sum, credito) => 
-        sum + parseFloat(credito.saldo_pendiente_total), 0
-      );
-      const totalPagosMes = pagosMes.reduce((sum, pago) => 
-        sum + parseFloat(pago.monto_recibido), 0
-      );
-      const totalMora = morasActivas.reduce((sum, mora) => 
-        sum + parseFloat(mora.monto_penalidad_acumulado), 0
-      );
+      // 7️⃣ Ingresos del mes → pagos
+      const [pagosMes] = await pool.execute(`
+        SELECT SUM(monto_recibido) AS total
+        FROM pagos
+        WHERE MONTH(fecha_pago) = MONTH(NOW())
+        AND YEAR(fecha_pago) = YEAR(NOW())
+      `);
+      const ingresosMensuales = pagosMes[0].total || 0;
 
-      // Tasa de aprobación
-      const tasaAprobacion = totalSolicitudes > 0 
-        ? ((solicitudesAprobadas.length + solicitudesPreAprobadas.length) / totalSolicitudes * 100).toFixed(1)
+      // 8️⃣ Actividad reciente → NOTIFICACIONES
+      const [notifs] = await pool.execute(`
+        SELECT 
+          n.id_notificacion,
+          n.id_solicitud,
+          n.tipo,
+          n.fecha_creacion,
+          u.nombre AS usuario
+        FROM notificaciones n
+        INNER JOIN usuarios u ON n.id_usuario = u.id_usuario
+        ORDER BY n.fecha_creacion DESC
+        LIMIT 7
+      `);
+
+      const actividadReciente = notifs.map(n => {
+        let accion = 'tiene una notificación';
+
+        switch (n.tipo) {
+          case 'aprobado':
+            accion = 'ha sido aprobada';
+            break;
+          case 'rechazado':
+            accion = 'ha sido rechazada';
+            break;
+          case 'pago_recibido':
+            accion = 'ha registrado un pago';
+            break;
+          case 'mora':
+            accion = 'ha entrado en mora';
+            break;
+        }
+
+        return {
+          descripcion: `La solicitud #${n.id_solicitud} del usuario ${n.usuario} ${accion}`,
+          timestamp: n.fecha_creacion
+        };
+      });
+
+      // 9️⃣ Tasa de aprobación
+      const tasaAprobacion = totalSolicitudes > 0
+        ? Number(((solicitudesAprobadas / totalSolicitudes) * 100).toFixed(1))
         : 0;
 
+      // 🔟 Alertas
+      const alertas = [];
+
+      if (solicitudesPreAprobadas > 0) {
+        alertas.push({
+          tipo: "warning",
+          mensaje: `${solicitudesPreAprobadas} solicitudes pendientes`
+        });
+      }
+
+      if (pagosVencidos > 0) {
+        alertas.push({
+          tipo: "danger",
+          mensaje: `${pagosVencidos} pagos vencidos`
+        });
+      }
+
       return {
-        metricas: {
-          totalSolicitudes,
-          solicitudesPendientes: solicitudesPendientes.length,
-          solicitudesPreAprobadas: solicitudesPreAprobadas.length,
-          solicitudesAprobadas: solicitudesAprobadas.length,
-          creditosActivos: creditosActivos.length,
-          totalCartera: Number(totalCartera.toFixed(2)),
-          totalPagosMes: Number(totalPagosMes.toFixed(2)),
-          totalMora: Number(totalMora.toFixed(2)),
-          tasaAprobacion: `${tasaAprobacion}%`,
-          cuotasEnMora: morasActivas.length
-        },
-        alertas: morasActivas.length > 0 ? [
-          {
-            tipo: 'warning',
-            mensaje: `${morasActivas.length} cuotas en mora`,
-            detalles: `Total en penalidades: $${Number(totalMora.toFixed(2))}`
-          }
-        ] : []
+        totalUsuarios,
+        usuariosActivos,
+        totalCreditos,
+        creditosActivos,
+        montoTotal,
+        actividadReciente,
+        solicitudesPreAprobadas,
+        pagosVencidos,
+        tasaAprobacion,
+        ingresosMensuales,
+        alertas
       };
 
-    } catch (error) {
-      console.error('Error obteniendo métricas:', error);
-      throw error;
+    } catch (err) {
+      console.error("Error en DashboardService:", err);
+      throw err;
     }
   }
 
-  // Obtener métricas para analistas
-  static async getMetricasAnalista() {
-    const metricasGenerales = await this.getMetricasGenerales();
-    
-    // Agregar métricas específicas para analistas
-    const pagosHoy = await Pago.getTotalPorDia(new Date().toISOString().split('T')[0]);
-    
-    return {
-      ...metricasGenerales,
-      metricas: {
-        ...metricasGenerales.metricas,
-        pagosHoy: Number(pagosHoy.total || 0)
-      }
-    };
-  }
-
-  // Obtener datos para gráficos
-  static async getDatosGraficos(dias = 30) {
-    const datos = {
-      solicitudesPorEstado: {},
-      pagosPorDia: [],
-      creditosPorMes: []
-    };
-
-    // Solicitudes por estado (últimos 30 días)
-    const solicitudesRecientes = await Solicitud.findAll({ limit: 1000 });
-    datos.solicitudesPorEstado = this.contarPorEstado(solicitudesRecientes);
-
-    // Pagos por día (últimos 7 días)
-    for (let i = 6; i >= 0; i--) {
-      const fecha = new Date();
-      fecha.setDate(fecha.getDate() - i);
-      const fechaStr = fecha.toISOString().split('T')[0];
-      
-      const totalDia = await Pago.getTotalPorDia(fechaStr);
-      datos.pagosPorDia.push({
-        fecha: fechaStr,
-        total: Number(totalDia.total || 0)
-      });
-    }
-
-    return datos;
-  }
-
-  // Helper: contar solicitudes por estado
-  static contarPorEstado(solicitudes) {
-    return solicitudes.reduce((acc, solicitud) => {
-      acc[solicitud.estado] = (acc[solicitud.estado] || 0) + 1;
-      return acc;
-    }, {});
+  static getMetricasAnalista() {
+    return this.getMetricasGenerales();
   }
 }

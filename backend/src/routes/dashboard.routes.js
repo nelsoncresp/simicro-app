@@ -5,39 +5,27 @@ import { requireAdmin, requireAdminOrAnalyst } from '../middleware/role.js';
 
 const router = Router();
 
+// Todas las rutas requieren autenticación
 router.use(authenticate);
 
 /**
  * @swagger
  * /api/dashboard/general:
  *   get:
- *     summary: Dashboard general (Solo Administradores)
+ *     summary: Dashboard general del sistema (solo administradores)
+ *     description: 
+ *       Devuelve métricas globales como usuarios activos, créditos, solicitudes,
+ *       ingresos del mes, cartera activa y actividad reciente basada en notificaciones.
  *     tags: [Dashboard]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Métricas generales del sistema
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   type: object
- *                   properties:
- *                     totalUsuarios:
- *                       type: integer
- *                     totalCreditos:
- *                       type: integer
- *                     creditosActivos:
- *                       type: integer
- *                     montoTotal:
- *                       type: number
+ *         description: Dashboard general obtenido correctamente
+ *       401:
+ *         description: No autenticado
  *       403:
- *         description: No autorizado - Se requiere rol de administrador
+ *         description: Solo permitido para administradores
  */
 router.get('/general', requireAdmin, DashboardController.getDashboardGeneral);
 
@@ -45,29 +33,20 @@ router.get('/general', requireAdmin, DashboardController.getDashboardGeneral);
  * @swagger
  * /api/dashboard/metricas:
  *   get:
- *     summary: Métricas para analistas (Admin y Analistas)
+ *     summary: Métricas para analistas (Admin o Analista)
+ *     description:
+ *       Retorna métricas clave utilizadas para análisis interno del sistema:
+ *       solicitudes pendientes, pagos vencidos, tasa de aprobación, actividad reciente, etc.
  *     tags: [Dashboard]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Métricas para análisis
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   type: object
- *                   properties:
- *                     solicitudesPendientes:
- *                       type: integer
- *                     creditosAprobados:
- *                       type: integer
- *                     tasaAprobacion:
- *                       type: number
+ *         description: Métricas obtenidas correctamente
+ *       401:
+ *         description: No autenticado
+ *       403:
+ *         description: No autorizado
  */
 router.get('/metricas', requireAdminOrAnalyst, DashboardController.getMetricas);
 
@@ -75,30 +54,21 @@ router.get('/metricas', requireAdminOrAnalyst, DashboardController.getMetricas);
  * @swagger
  * /api/dashboard/emprendedor:
  *   get:
- *     summary: Dashboard emprendedor (Admin y Analistas)
+ *     summary: Dashboard del emprendedor autenticado
+ *     description:
+ *       Devuelve sus créditos, el próximo pago, deuda total pendiente y detalles
+ *       del emprendimiento registrado.
  *     tags: [Dashboard]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Métricas de emprendedores
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   type: object
- *                   properties:
- *                     emprendedoresActivos:
- *                       type: integer
- *                     proyectosActivos:
- *                       type: integer
- *                     promedioCreditos:
- *                       type: number
+ *         description: Dashboard del emprendedor obtenido correctamente
+ *       401:
+ *         description: No autenticado
+ *       404:
+ *         description: El usuario no tiene un emprendimiento registrado
  */
-router.get('/emprendedor', requireAdminOrAnalyst, DashboardController.getDashboardEmprendedor);
+router.get('/emprendedor', DashboardController.getDashboardEmprendedor);
 
 export default router;

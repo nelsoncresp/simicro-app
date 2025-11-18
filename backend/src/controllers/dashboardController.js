@@ -2,83 +2,81 @@ import { DashboardService } from '../services/dashboard.service.js';
 import { success, error } from '../utils/responses.js';
 
 export class DashboardController {
-  // Dashboard general (admin)
+
   static async getDashboardGeneral(req, res) {
     try {
-      const metricas = await DashboardService.getMetricasGenerales();
-      const graficos = await DashboardService.getDatosGraficos();
+      const data = await DashboardService.getMetricasGenerales();
 
-      success(res, {
-        ...metricas,
-        graficos
+      return success(res, {
+        ...data,
+        montoTotal: Number(data.montoTotal || 0),
+        ingresosMensuales: Number(data.ingresosMensuales || 0),
+        tasaAprobacion: Number(data.tasaAprobacion || 0),
+        actividadReciente: data.actividadReciente || [],
+        alertas: data.alertas || []
       }, 'Dashboard general obtenido');
 
     } catch (err) {
-      console.error('Error obteniendo dashboard:', err);
-      error(res, 'Error obteniendo dashboard', 500);
+      console.error('Error obteniendo dashboard general:', err);
+      return error(res, 'Error obteniendo dashboard general', 500);
     }
   }
 
-  // Métricas para analistas
   static async getMetricas(req, res) {
     try {
-      const metricas = await DashboardService.getMetricasAnalista();
-      success(res, metricas, 'Métricas obtenidas');
+      const data = await DashboardService.getMetricasAnalista();
+      return success(res, data, 'Métricas obtenidas');
     } catch (err) {
       console.error('Error obteniendo métricas:', err);
-      error(res, 'Error obteniendo métricas', 500);
+      return error(res, 'Error obteniendo métricas', 500);
     }
   }
 
-  // Dashboard emprendedor
   static async getDashboardEmprendedor(req, res) {
     try {
-      // Obtener emprendedor del usuario autenticado
-      const { Emprendedor } = await import('../models/Emprendedor.js');
-      const emprendedor = await Emprendedor.findByUserId(req.user.id_usuario);
+      const { Emprendimiento } = await import('../models/Emprendedor.js');
+      const { Credito } = await import('../models/Credito.js');
+      const { Cuota } = await import('../models/Cuota.js');
 
-      if (!emprendedor) {
-        return error(res, 'Perfil de emprendedor no encontrado', 404);
+      const usuarioId = req.user.id_usuario;
+      const emprendimiento = await Emprendimiento.findByUserId(usuarioId);
+
+      if (!emprendimiento) {
+        return error(res, 'No tiene un emprendimiento registrado.', 404);
       }
 
-      // Obtener créditos del emprendedor
-      const { Credito } = await import('../models/Credito.js');
-      const creditos = await Credito.findByEmprendedor(emprendedor.id_emprendedor);
+      const creditos = await Credito.findByEmprendedor(emprendimiento.id_emprendimiento);
 
-      // Obtener cuotas pendientes
-      let proximoVencimiento = null;
       let totalPendiente = 0;
+      let proximoVencimiento = null;
 
-      for (let credito of creditos) {
-        const { Cuota } = await import('../models/Cuota.js');
+      for (const credito of creditos) {
         const cuotasPendientes = await Cuota.findPendientesByCredito(credito.id_credito);
-        
-        totalPendiente += cuotasPendientes.reduce((sum, cuota) => 
-          sum + parseFloat(cuota.monto_esperado), 0
-        );
+
+        totalPendiente += cuotasPendientes.reduce((s, c) => s + Number(c.monto_esperado), 0);
 
         if (cuotasPendientes.length > 0) {
-          const proxima = cuotasPendientes[0];
-          if (!proximoVencimiento || new Date(proxima.fecha_vencimiento) < new Date(proximoVencimiento.fecha_vencimiento)) {
-            proximoVencimiento = proxima;
+          const primera = cuotasPendientes[0];
+          if (!proximoVencimiento || new Date(primera.fecha_vencimiento) < new Date(proximoVencimiento.fecha_vencimiento)) {
+            proximoVencimiento = primera;
           }
         }
       }
 
-      success(res, {
-        emprendedor,
+      return success(res, {
+        emprendedor: emprendimiento,
         resumen: {
           totalCreditos: creditos.length,
+          creditosActivos: creditos.filter(c => c.estado === 'activo').length,
           totalPendiente: Number(totalPendiente.toFixed(2)),
-          proximoVencimiento,
-          creditosActivos: creditos.filter(c => c.estado === 'activo').length
+          proximoVencimiento
         },
         creditos
       }, 'Dashboard emprendedor obtenido');
 
     } catch (err) {
       console.error('Error obteniendo dashboard emprendedor:', err);
-      error(res, 'Error obteniendo dashboard emprendedor', 500);
+      return error(res, 'Error obteniendo dashboard emprendedor', 500);
     }
   }
 }

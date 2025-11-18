@@ -60,4 +60,23 @@ export class Pago {
     );
     return rows;
   }
+
+  static async findByFecha(inicio, fin) {
+  const [rows] = await pool.execute(
+    `SELECT * FROM pagos WHERE DATE(fecha_pago) BETWEEN ? AND ?`,
+    [inicio, fin]
+  );
+  return rows;
+}
+
+static async getTotalPorDia(fecha) {
+  const [rows] = await pool.execute(
+    `SELECT SUM(monto_recibido) AS total 
+     FROM pagos 
+     WHERE DATE(fecha_pago) = ?`,
+    [fecha]
+  );
+  return rows[0] || { total: 0 };
+}
+
 }
