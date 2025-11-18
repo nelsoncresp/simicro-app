@@ -13,7 +13,7 @@ export class AnalistaViewComponent implements OnInit {
 
   currentUser = signal<any>(null);
 
-  // DASHBOARD DATA
+  // DASHBOARD
   dashboard: any = null;
 
   // SOLICITUDES
@@ -22,9 +22,14 @@ export class AnalistaViewComponent implements OnInit {
   search = '';
   tab: string = 'pendientes';
 
+  // CONTADORES
   pendientesCount = 0;
+  preAprobadasCount = 0;
+  activasCount = 0;
   aprobadasCount = 0;
+  rechazadasCount = 0;
 
+  // MODAL
   showModal = false;
   detalle: any = null;
 
@@ -42,30 +47,30 @@ export class AnalistaViewComponent implements OnInit {
     this.loadSolicitudes();
   }
 
-  // ===========================
+  // ==========================
   // DASHBOARD
-  // ===========================
+  // ==========================
   loadDashboard() {
     const token = localStorage.getItem('token');
 
-   this.http.get(this.apiDashboard, {
-  headers: { Authorization: `Bearer ${token}` }
-}).subscribe({
-  next: (res: any) => this.dashboard = res.data || res,
-  error: () => this.dashboard = { error: true }
-});
-
+    this.http.get(this.apiDashboard, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: (res: any) => this.dashboard = res.data || res,
+      error: () => this.dashboard = { error: true }
+    });
   }
 
-  // ===========================
+  // ==========================
   // SOLICITUDES
-  // ===========================
+  // ==========================
   loadSolicitudes() {
     const token = localStorage.getItem('token');
 
     this.http.get(this.apiSol, {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe((res: any) => {
+       
       this.solicitudes = res.data;
       this.filtered = [...this.solicitudes];
       this.actualizarContadores();
@@ -85,45 +90,55 @@ export class AnalistaViewComponent implements OnInit {
   }
 
   actualizarContadores() {
-    this.pendientesCount = this.solicitudes.filter(s => s.estado !== 'activo').length;
-    this.aprobadasCount = this.solicitudes.filter(s => s.estado === 'activo').length;
+    this.pendientesCount   = this.solicitudes.filter(s => s.estado === 'pendiente').length;
+    this.preAprobadasCount = this.solicitudes.filter(s => s.estado === 'pre-aprobado').length;
+    this.activasCount      = this.solicitudes.filter(s => s.estado === 'activo').length;
+    this.aprobadasCount    = this.solicitudes.filter(s => s.estado === 'aprobado').length;
+    this.rechazadasCount   = this.solicitudes.filter(s => s.estado === 'rechazado').length;
   }
 
-  // ===========================
-  // DETALLE
-  // ===========================
-verDetalle(s: any) {
-  console.log("ABRIENDO MODAL PARA:", s);
+  // ==========================
+  // DETALLE - MODAL
+  // ==========================
+  verDetalle(s: any) {
+    this.showModal = true;
+    this.detalle = null;
 
-  this.showModal = true;
-  this.detalle = null;
+    const token = localStorage.getItem('token');
+    const url = `${this.apiEmp}/${s.id_emprendedor}`;
 
-  const token = localStorage.getItem('token');
-  const url = `${this.apiEmp}/${s.id_emprendedor}`;
+    this.http.get(url, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: (res: any) => {
+        this.detalle = res.data || res;
 
-  console.log("URL CONSULTADA:", url);
-
-  this.http.get(url, {
-    headers: { Authorization: `Bearer ${token}` }
-  }).subscribe({
-    next: (res: any) => {
-      console.log("RESPUESTA DETALLE RAW:", res);
-      this.detalle = res.data || res;
-      this.detalle.id_solicitud = s.id_solicitud;
-    },
-    error: err => {
-      console.error("ERROR DETALLE:", err);
-    }
-  });
-}
+        // Pasamos info de la solicitud
+        this.detalle.id_solicitud = s.id_solicitud;
+        this.detalle.estado = s.estado;     
+      },
+      error: err => console.error("ERROR DETALLE:", err)
+    });
+  }
 
   cerrarModal() {
     this.showModal = false;
   }
 
-  // ===========================
+  // ==========================
+  // BOTONES DEL MODAL
+  // ==========================
+  mostrarAcciones(): boolean {
+    if (!this.detalle?.estado) return false;
+
+    const estado = this.detalle.estado.toLowerCase();
+
+    return estado === 'pendiente' || estado === 'pre-aprobado';
+  }
+
+  // ==========================
   // APROBAR / DENEGAR
-  // ===========================
+  // ==========================
   aprobar(id: number) {
     const token = localStorage.getItem('token');
 
@@ -143,7 +158,7 @@ verDetalle(s: any) {
 
     this.http.patch(
       `${this.apiSol}/${id}/decision`,
-      { accion: 'rechazado' },
+      { accion: 'rechazar' },
       { headers: { Authorization: `Bearer ${token}` } }
     ).subscribe(() => {
       this.cerrarModal();
@@ -152,28 +167,36 @@ verDetalle(s: any) {
     });
   }
 
-  isPendiente(s: any) { return s.estado !== 'activo'; }
-  isAprobada(s: any) { return s.estado === 'activo'; }
+  // ==========================
+  // MÉTODOS POR ESTADO
+  // ==========================
+ isPendiente(s: any)    { return s.estado === 'pendiente'; }
+isPreAprobada(s: any)  { return s.estado === 'pre-aprobado'; }
+isActiva(s: any)       { return s.estado === 'activo'; }
+isAprobada(s: any)     { return s.estado === 'aprobado'; }
+isRechazada(s: any)    { return s.estado === 'rechazado'; }
 
+
+  // ==========================
+  // PAGINACIÓN
+  // ==========================
   page = 1;
-itemsPerPage = 5;
+  itemsPerPage = 5;
 
-get paginatedList() {
-  const start = (this.page - 1) * this.itemsPerPage;
-  return this.filtered.slice(start, start + this.itemsPerPage);
-}
+  get paginatedList() {
+    const start = (this.page - 1) * this.itemsPerPage;
+    return this.filtered.slice(start, start + this.itemsPerPage);
+  }
 
-totalPages() {
-  return Math.ceil(this.filtered.length / this.itemsPerPage);
-}
+  totalPages() {
+    return Math.ceil(this.filtered.length / this.itemsPerPage);
+  }
 
-nextPage() {
-  if (this.page < this.totalPages()) this.page++;
-}
+  nextPage() {
+    if (this.page < this.totalPages()) this.page++;
+  }
 
-prevPage() {
-  if (this.page > 1) this.page--;
-}
-
-
+  prevPage() {
+    if (this.page > 1) this.page--;
+  }
 }

@@ -30,7 +30,7 @@ export class DashboardComponent implements OnInit {
   cargarPerfil() {
     this.perfilService.getPerfil().subscribe({
       next: (res: any) => {
-        this.nombreUsuario = res.data?.nombre || '';
+        this.nombreUsuario = res.data?.nombre || 'User';
         this.nombreEmprendimiento = res.data?.emprendedor?.nombre_emprendimiento || '';
       }
     });

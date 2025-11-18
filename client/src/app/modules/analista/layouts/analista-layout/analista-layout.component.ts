@@ -45,7 +45,7 @@ import { AuthService } from '../../../../core/services/auth.service'
 
                 <div>
                   <p class="text-sm font-medium">{{ currentUser()?.nombre }}</p>
-                  <p class="text-xs text-blue-200">Administrador</p>
+                  <p class="text-xs text-blue-200">Empleado</p>
                 </div>
               </div>
 
