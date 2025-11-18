@@ -20,7 +20,7 @@ export class AnalistaViewComponent implements OnInit {
   solicitudes: any[] = [];
   filtered: any[] = [];
   search = '';
-  tab: string = 'pendientes';
+  tab: string = 'pendiente';
 
   // CONTADORES
   pendientesCount = 0;
@@ -70,7 +70,6 @@ export class AnalistaViewComponent implements OnInit {
     this.http.get(this.apiSol, {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe((res: any) => {
-       
       this.solicitudes = res.data;
       this.filtered = [...this.solicitudes];
       this.actualizarContadores();
@@ -89,12 +88,18 @@ export class AnalistaViewComponent implements OnInit {
     this.actualizarContadores();
   }
 
+  // MÉTODO ACTUALIZADO - AHORA USA filtered PARA LOS CONTADORES
   actualizarContadores() {
-    this.pendientesCount   = this.solicitudes.filter(s => s.estado === 'pendiente').length;
-    this.preAprobadasCount = this.solicitudes.filter(s => s.estado === 'pre-aprobado').length;
-    this.activasCount      = this.solicitudes.filter(s => s.estado === 'activo').length;
-    this.aprobadasCount    = this.solicitudes.filter(s => s.estado === 'aprobado').length;
-    this.rechazadasCount   = this.solicitudes.filter(s => s.estado === 'rechazado').length;
+    this.pendientesCount   = this.filtered.filter(s => s.estado === 'pendiente').length;
+    this.preAprobadasCount = this.filtered.filter(s => s.estado === 'pre-aprobado').length;
+    this.activasCount      = this.filtered.filter(s => s.estado === 'activo').length;
+    this.aprobadasCount    = this.filtered.filter(s => s.estado === 'aprobado').length;
+    this.rechazadasCount   = this.filtered.filter(s => s.estado === 'rechazado').length;
+  }
+
+  // MÉTODO PARA CAMBIAR DE PESTAÑA
+  cambiarTab(nuevaTab: string) {
+    this.tab = nuevaTab;
   }
 
   // ==========================
@@ -170,33 +175,23 @@ export class AnalistaViewComponent implements OnInit {
   // ==========================
   // MÉTODOS POR ESTADO
   // ==========================
- isPendiente(s: any)    { return s.estado === 'pendiente'; }
-isPreAprobada(s: any)  { return s.estado === 'pre-aprobado'; }
-isActiva(s: any)       { return s.estado === 'activo'; }
-isAprobada(s: any)     { return s.estado === 'aprobado'; }
-isRechazada(s: any)    { return s.estado === 'rechazado'; }
+  isPendiente(s: any)    { return s.estado === 'pendiente'; }
+  isPreAprobada(s: any)  { return s.estado === 'pre-aprobado'; }
+  isActiva(s: any)       { return s.estado === 'activo'; }
+  isAprobada(s: any)     { return s.estado === 'aprobado'; }
+  isRechazada(s: any)    { return s.estado === 'rechazado'; }
 
-
-  // ==========================
-  // PAGINACIÓN
-  // ==========================
-  page = 1;
-  itemsPerPage = 5;
-
-  get paginatedList() {
-    const start = (this.page - 1) * this.itemsPerPage;
-    return this.filtered.slice(start, start + this.itemsPerPage);
-  }
-
-  totalPages() {
-    return Math.ceil(this.filtered.length / this.itemsPerPage);
-  }
-
-  nextPage() {
-    if (this.page < this.totalPages()) this.page++;
-  }
-
-  prevPage() {
-    if (this.page > 1) this.page--;
+  // MÉTODO PARA OBTENER SOLICITUDES VISIBLES EN LA PESTAÑA ACTUAL
+  getSolicitudesVisibles() {
+    return this.filtered.filter(s => {
+      switch (this.tab) {
+        case 'pendiente': return this.isPendiente(s);
+        case 'pre-aprobado': return this.isPreAprobada(s);
+        case 'activo': return this.isActiva(s);
+        case 'aprobado': return this.isAprobada(s);
+        case 'rechazado': return this.isRechazada(s);
+        default: return false;
+      }
+    });
   }
 }

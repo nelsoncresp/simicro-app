@@ -27,7 +27,7 @@ router.use(authenticate);
  *       403:
  *         description: Solo permitido para administradores
  */
-router.get('/general', requireAdmin, DashboardController.getDashboardGeneral);
+router.get('/general', requireAdminOrAnalyst, DashboardController.getDashboardGeneral);
 
 /**
  * @swagger

@@ -87,296 +87,288 @@
 
   </section>
 
-  
-
   <!-- DIVIDER PREMIUM ENTRE DASHBOARD Y SOLICITUDES -->
-<div class="relative flex items-center justify-center my-12">
-  
-  <!-- LÍNEAS A LOS LADOS -->
-  <div class="w-full h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
+  <div class="relative flex items-center justify-center my-12">
+    
+    <!-- LÍNEAS A LOS LADOS -->
+    <div class="w-full h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
 
-  <!-- ICONO CENTRAL -->
-  <div class="absolute bg-white px-6 py-2 rounded-full shadow-md border border-slate-200
-              flex items-center gap-2 text-slate-600 text-sm font-medium">
+    <!-- ICONO CENTRAL -->
+    <div class="absolute bg-white px-6 py-2 rounded-full shadow-md border border-slate-200
+                flex items-center gap-2 text-slate-600 text-sm font-medium">
 
-    <i class="bi bi-layers-half text-indigo-600"></i>
-    Gestion de solicitudes
+      <i class="bi bi-layers-half text-indigo-600"></i>
+      Gestion de solicitudes
+    </div>
+
   </div>
-
-</div>
-
 
   <!-- ========================================================
        SOLICITUDES – Sección premium y armoniosa
   ======================================================== -->
-<section class="mb-10">
-<!-- ========================================================
-     TABS + BUSCADOR — Corregido con estados reales
-======================================================== -->
-<section class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-white p-4 mb-8">
-  <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+  <section class="mb-10">
+    <!-- ========================================================
+         TABS + BUSCADOR — Corregido con estados reales
+    ======================================================== -->
+    <section class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-white p-4 mb-8">
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
 
-    <!-- TABS compactos sin scroll -->
-    <div class="flex gap-2 flex-wrap">
+        <!-- TABS compactos sin scroll -->
+        <div class="flex gap-2 flex-wrap">
 
-      <!-- PENDIENTES -->
-      <button
-        (click)="tab='pendiente'"
-        class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-1 transition"
-        [ngClass]="tab==='pendiente'
-          ? 'bg-indigo-600 text-white shadow-md'
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'">
-        <i class="bi bi-clock-history text-sm"></i>
-        Pendientes
-        <span class="px-2 py-0.5 rounded-full text-xs"
-              [ngClass]="tab==='pendiente' ? 'bg-white/20' : 'bg-gray-300'">
-          {{ pendientesCount }}
-        </span>
-      </button>
+          <!-- PENDIENTES -->
+          <button
+            (click)="cambiarTab('pendiente')"
+            class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-1 transition"
+            [ngClass]="tab==='pendiente'
+              ? 'bg-indigo-600 text-white shadow-md'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'">
+            <i class="bi bi-clock-history text-sm"></i>
+            Pendientes
+            <span class="px-2 py-0.5 rounded-full text-xs"
+                  [ngClass]="tab==='pendiente' ? 'bg-white/20' : 'bg-gray-300'">
+              {{ pendientesCount }}
+            </span>
+          </button>
 
-      <!-- PRE-APROBADO -->
-      <button
-        (click)="tab='pre-aprobado'"
-        class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-1 transition"
-        [ngClass]="tab==='pre-aprobado'
-          ? 'bg-amber-500 text-white shadow-md'
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'">
-        <i class="bi bi-star-half text-sm"></i>
-        Pre-aprobadas
-        <span class="px-2 py-0.5 rounded-full text-xs"
-              [ngClass]="tab==='pre-aprobado' ? 'bg-white/20' : 'bg-gray-300'">
-          {{ preAprobadasCount }}
-        </span>
-      </button>
+          <!-- PRE-APROBADO -->
+          <button
+            (click)="cambiarTab('pre-aprobado')"
+            class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-1 transition"
+            [ngClass]="tab==='pre-aprobado'
+              ? 'bg-amber-500 text-white shadow-md'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'">
+            <i class="bi bi-star-half text-sm"></i>
+            Pre-aprobadas
+            <span class="px-2 py-0.5 rounded-full text-xs"
+                  [ngClass]="tab==='pre-aprobado' ? 'bg-white/20' : 'bg-gray-300'">
+              {{ preAprobadasCount }}
+            </span>
+          </button>
 
-      <!-- ACTIVO -->
-      <button
-        (click)="tab='activo'"
-        class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-1 transition"
-        [ngClass]="tab==='activo'
-          ? 'bg-blue-600 text-white shadow-md'
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'">
-        <i class="bi bi-lightning-charge text-sm"></i>
-        Activas
-        <span class="px-2 py-0.5 rounded-full text-xs"
-              [ngClass]="tab==='activo' ? 'bg-white/20' : 'bg-gray-300'">
-          {{ activasCount }}
-        </span>
-      </button>
+          <!-- ACTIVO -->
+          <button
+            (click)="cambiarTab('activo')"
+            class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-1 transition"
+            [ngClass]="tab==='activo'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'">
+            <i class="bi bi-lightning-charge text-sm"></i>
+            Activas
+            <span class="px-2 py-0.5 rounded-full text-xs"
+                  [ngClass]="tab==='activo' ? 'bg-white/20' : 'bg-gray-300'">
+              {{ activasCount }}
+            </span>
+          </button>
 
-      <!-- APROBADO -->
-      <button
-        (click)="tab='aprobado'"
-        class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-1 transition"
-        [ngClass]="tab==='aprobado'
-          ? 'bg-emerald-600 text-white shadow-md'
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'">
-        <i class="bi bi-check-circle text-sm"></i>
-        Aprobadas
-        <span class="px-2 py-0.5 rounded-full text-xs"
-              [ngClass]="tab==='aprobado' ? 'bg-white/20' : 'bg-gray-300'">
-          {{ aprobadasCount }}
-        </span>
-      </button>
+          <!-- APROBADO -->
+          <button
+            (click)="cambiarTab('aprobado')"
+            class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-1 transition"
+            [ngClass]="tab==='aprobado'
+              ? 'bg-emerald-600 text-white shadow-md'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'">
+            <i class="bi bi-check-circle text-sm"></i>
+            Aprobadas
+            <span class="px-2 py-0.5 rounded-full text-xs"
+                  [ngClass]="tab==='aprobado' ? 'bg-white/20' : 'bg-gray-300'">
+              {{ aprobadasCount }}
+            </span>
+          </button>
 
-      <!-- RECHAZADO -->
-      <button
-        (click)="tab='rechazado'"
-        class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-1 transition"
-        [ngClass]="tab==='rechazado'
-          ? 'bg-red-600 text-white shadow-md'
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'">
-        <i class="bi bi-x-circle text-sm"></i>
-        Rechazadas
-        <span class="px-2 py-0.5 rounded-full text-xs"
-              [ngClass]="tab==='rechazado' ? 'bg-white/20' : 'bg-gray-300'">
-          {{ rechazadasCount }}
-        </span>
-      </button>
+          <!-- RECHAZADO -->
+          <button
+            (click)="cambiarTab('rechazado')"
+            class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex items-center gap-1 transition"
+            [ngClass]="tab==='rechazado'
+              ? 'bg-red-600 text-white shadow-md'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'">
+            <i class="bi bi-x-circle text-sm"></i>
+            Rechazadas
+            <span class="px-2 py-0.5 rounded-full text-xs"
+                  [ngClass]="tab==='rechazado' ? 'bg-white/20' : 'bg-gray-300'">
+              {{ rechazadasCount }}
+            </span>
+          </button>
 
-    </div>
-
-    <!-- BUSCADOR compacto (más pequeñito) -->
-    <div class="relative w-full lg:max-w-xs">
-      <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-      <input
-        [(ngModel)]="search"
-        (input)="filtrar()"
-        class="w-full pl-8 pr-3 py-1.5 text-xs bg-white/80 backdrop-blur-sm
-               rounded-lg border border-gray-200
-               focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-        placeholder="Buscar..."
-      />
-    </div>
-
-  </div>
-</section>
-
-
-<!-- ========================================================
-     LISTADO DE SOLICITUDES — Corregido
-======================================================== -->
-<section class="space-y-4">
-
-  <!-- VACÍO -->
-  <div *ngIf="paginatedList.length === 0"
-       class="bg-white/80 backdrop-blur-sm border border-white rounded-2xl p-12 text-center shadow-sm">
-    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mx-auto mb-4">
-      <i class="bi bi-inbox text-3xl text-gray-400"></i>
-    </div>
-    <h3 class="text-lg font-medium text-gray-700 mb-2">No hay solicitudes en esta categoría</h3>
-    <p class="text-gray-500 text-sm max-w-md mx-auto">Prueba cambiar de pestaña o usar el buscador.</p>
-  </div>
-
-  <!-- TARJETAS -->
-  <ng-container *ngFor="let s of paginatedList">
-
-    <!-- PENDIENTE -->
-    <div *ngIf="tab==='pendiente' && isPendiente(s)"
-         class="bg-white/80 backdrop-blur-sm border rounded-2xl shadow-md hover:shadow-lg p-5
-                flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-
-      <div class="flex items-start gap-4">
-        <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
-          <i class="bi bi-hourglass-split text-indigo-700 text-lg"></i>
         </div>
 
-        <div>
-          <h3 class="text-lg font-semibold text-gray-900">{{ s.nombre_negocio }}</h3>
-
-          <div class="flex items-center gap-2 mt-1 text-xs font-medium text-gray-700">
-            <span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-lg">ID: {{ s.id_solicitud }}</span>
-            <span class="px-2 py-0.5 bg-yellow-50 text-yellow-700 rounded-lg">Pendiente</span>
-          </div>
-
-          <p class="text-gray-700 text-sm mt-2"><i class="bi bi-person"></i> {{ s.nombre_emprendedor }}</p>
-          <p class="text-gray-700 text-sm"><i class="bi bi-currency-dollar"></i> {{ s.monto_solicitado | currency:'COP' }}</p>
+        <!-- BUSCADOR compacto (más pequeñito) -->
+        <div class="relative w-full lg:max-w-xs">
+          <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+          <input
+            [(ngModel)]="search"
+            (input)="filtrar()"
+            class="w-full pl-8 pr-3 py-1.5 text-xs bg-white/80 backdrop-blur-sm
+                   rounded-lg border border-gray-200
+                   focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+            placeholder="Buscar..."
+          />
         </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================
+         LISTADO DE SOLICITUDES — Corregido
+    ======================================================== -->
+    <section class="space-y-4">
+
+      <!-- VACÍO -->
+      <div *ngIf="getSolicitudesVisibles().length === 0"
+           class="bg-white/80 backdrop-blur-sm border border-white rounded-2xl p-12 text-center shadow-sm">
+        <div class="w-20 h-20 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mx-auto mb-4">
+          <i class="bi bi-inbox text-3xl text-gray-400"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-700 mb-2">No hay solicitudes en esta categoría</h3>
+        <p class="text-gray-500 text-sm max-w-md mx-auto">Prueba cambiar de pestaña o usar el buscador.</p>
       </div>
 
-      <button (click)="verDetalle(s)"
-        class="px-5 py-2.5 rounded-xl bg-white border border-indigo-200 text-indigo-600 text-sm font-medium hover:bg-indigo-50">
-        Revisar solicitud
-      </button>
-    </div>
+      <!-- TARJETAS -->
+      <ng-container *ngFor="let s of getSolicitudesVisibles()">
 
-    <!-- PRE-APROBADO -->
-    <div *ngIf="tab==='pre-aprobado' && isPreAprobada(s)"
-         class="bg-white/80 backdrop-blur-sm border-yellow-200 rounded-2xl shadow-md hover:shadow-lg p-5">
+        <!-- PENDIENTE -->
+        <div *ngIf="tab==='pendiente' && isPendiente(s)"
+             class="bg-white/80 backdrop-blur-sm border rounded-2xl shadow-md hover:shadow-lg p-5
+                    flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
 
-      <div class="flex items-start gap-4">
-        <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-          <i class="bi bi-star-half text-amber-700 text-xl"></i>
-        </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
+              <i class="bi bi-hourglass-split text-indigo-700 text-lg"></i>
+            </div>
 
-        <div>
-          <h3 class="text-lg font-semibold">{{ s.nombre_negocio }}</h3>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900">{{ s.nombre_negocio }}</h3>
 
-          <div class="flex gap-2 text-xs font-medium">
-            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded-lg">ID: {{ s.id_solicitud }}</span>
-            <span class="px-2 py-0.5 bg-yellow-600/10 text-yellow-700 rounded-lg">Pre-aprobada</span>
+              <div class="flex items-center gap-2 mt-1 text-xs font-medium text-gray-700">
+                <span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-lg">ID: {{ s.id_solicitud }}</span>
+                <span class="px-2 py-0.5 bg-yellow-50 text-yellow-700 rounded-lg">Pendiente</span>
+              </div>
+
+              <p class="text-gray-700 text-sm mt-2"><i class="bi bi-person"></i> {{ s.nombre_emprendedor }}</p>
+              <p class="text-gray-700 text-sm"><i class="bi bi-currency-dollar"></i> {{ s.monto_solicitado | currency:'COP' }}</p>
+            </div>
           </div>
 
-          <p class="text-gray-700 text-sm mt-2"><i class="bi bi-person"></i> {{ s.nombre_emprendedor }}</p>
-          <p class="text-gray-700 text-sm"><i class="bi bi-currency-dollar"></i> {{ s.monto_solicitado | currency:'COP' }}</p>
-        </div>
-      </div>
-
-      <button (click)="verDetalle(s)"
-        class="px-5 py-2.5 mt-2 rounded-xl bg-white border border-yellow-300 text-yellow-700 text-sm font-medium hover:bg-yellow-50">
-        Revisar solicitud
-      </button>
-    </div>
-
-    <!-- ACTIVO -->
-    <div *ngIf="tab==='activo' && isActiva(s)"
-         class="bg-white/80 backdrop-blur-sm border-blue-200 rounded-2xl shadow-md hover:shadow-lg p-5">
-
-      <div class="flex items-start gap-4">
-        <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-          <i class="bi bi-lightning-charge text-blue-700 text-xl"></i>
+          <button (click)="verDetalle(s)"
+            class="px-5 py-2.5 rounded-xl bg-white border border-indigo-200 text-indigo-600 text-sm font-medium hover:bg-indigo-50">
+            Revisar solicitud
+          </button>
         </div>
 
-        <div>
-          <h3 class="text-lg font-semibold">{{ s.nombre_negocio }}</h3>
+        <!-- PRE-APROBADO -->
+        <div *ngIf="tab==='pre-aprobado' && isPreAprobada(s)"
+             class="bg-white/80 backdrop-blur-sm border-yellow-200 rounded-2xl shadow-md hover:shadow-lg p-5">
 
-          <div class="flex gap-2 text-xs font-medium">
-            <span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-lg">ID: {{ s.id_solicitud }}</span>
-            <span class="px-2 py-0.5 bg-blue-600/10 text-blue-700 rounded-lg">Activa</span>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
+              <i class="bi bi-star-half text-amber-700 text-xl"></i>
+            </div>
+
+            <div>
+              <h3 class="text-lg font-semibold">{{ s.nombre_negocio }}</h3>
+
+              <div class="flex gap-2 text-xs font-medium">
+                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded-lg">ID: {{ s.id_solicitud }}</span>
+                <span class="px-2 py-0.5 bg-yellow-600/10 text-yellow-700 rounded-lg">Pre-aprobada</span>
+              </div>
+
+              <p class="text-gray-700 text-sm mt-2"><i class="bi bi-person"></i> {{ s.nombre_emprendedor }}</p>
+              <p class="text-gray-700 text-sm"><i class="bi bi-currency-dollar"></i> {{ s.monto_solicitado | currency:'COP' }}</p>
+            </div>
           </div>
 
-          <p class="text-gray-700 text-sm mt-2">{{ s.monto_solicitado | currency:'COP' }}</p>
-        </div>
-      </div>
-
-      <button (click)="verDetalle(s)"
-        class="px-5 py-2.5 mt-2 rounded-xl bg-white border border-blue-300 text-blue-700">
-        Ver detalles
-      </button>
-    </div>
-
-    <!-- APROBADO -->
-    <div *ngIf="tab==='aprobado' && isAprobada(s)"
-         class="bg-white/80 backdrop-blur-sm border-emerald-200 rounded-2xl shadow-md hover:shadow-lg p-5">
-
-      <div class="flex items-start gap-4">
-        <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-          <i class="bi bi-check-circle text-emerald-700 text-xl"></i>
+          <button (click)="verDetalle(s)"
+            class="px-5 py-2.5 mt-2 rounded-xl bg-white border border-yellow-300 text-yellow-700 text-sm font-medium hover:bg-yellow-50">
+            Revisar solicitud
+          </button>
         </div>
 
-        <div>
-          <h3 class="text-lg font-semibold">{{ s.nombre_negocio }}</h3>
+        <!-- ACTIVO -->
+        <div *ngIf="tab==='activo' && isActiva(s)"
+             class="bg-white/80 backdrop-blur-sm border-blue-200 rounded-2xl shadow-md hover:shadow-lg p-5">
 
-          <div class="flex gap-2 text-xs font-medium">
-            <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-lg">ID: {{ s.id_solicitud }}</span>
-            <span class="px-2 py-0.5 bg-emerald-600/10 text-emerald-700 rounded-lg">Aprobada</span>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+              <i class="bi bi-lightning-charge text-blue-700 text-xl"></i>
+            </div>
+
+            <div>
+              <h3 class="text-lg font-semibold">{{ s.nombre_negocio }}</h3>
+
+              <div class="flex gap-2 text-xs font-medium">
+                <span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-lg">ID: {{ s.id_solicitud }}</span>
+                <span class="px-2 py-0.5 bg-blue-600/10 text-blue-700 rounded-lg">Activa</span>
+              </div>
+
+              <p class="text-gray-700 text-sm mt-2">{{ s.monto_solicitado | currency:'COP' }}</p>
+            </div>
           </div>
 
-          <p class="text-gray-700 text-sm mt-2">{{ s.monto_solicitado | currency:'COP' }}</p>
-        </div>
-      </div>
-
-      <button (click)="verDetalle(s)"
-        class="px-5 py-2.5 mt-2 rounded-xl bg-white border border-indigo-200 text-indigo-600">
-        Ver detalles
-      </button>
-    </div>
-
-    <!-- RECHAZADO -->
-    <div *ngIf="tab==='rechazado' && isRechazada(s)"
-         class="bg-white/80 backdrop-blur-sm border-red-200 rounded-2xl shadow-md hover:shadow-lg p-5">
-
-      <div class="flex items-start gap-4">
-        <div class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
-          <i class="bi bi-x-circle text-red-700 text-xl"></i>
+          <button (click)="verDetalle(s)"
+            class="px-5 py-2.5 mt-2 rounded-xl bg-white border border-blue-300 text-blue-700">
+            Ver detalles
+          </button>
         </div>
 
-        <div>
-          <h3 class="text-lg font-semibold">{{ s.nombre_negocio }}</h3>
+        <!-- APROBADO -->
+        <div *ngIf="tab==='aprobado' && isAprobada(s)"
+             class="bg-white/80 backdrop-blur-sm border-emerald-200 rounded-2xl shadow-md hover:shadow-lg p-5">
 
-          <div class="flex gap-2 text-xs font-medium">
-            <span class="px-2 py-0.5 bg-red-50 text-red-700 rounded-lg">ID: {{ s.id_solicitud }}</span>
-            <span class="px-2 py-0.5 bg-red-600/10 text-red-700 rounded-lg">Rechazada</span>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
+              <i class="bi bi-check-circle text-emerald-700 text-xl"></i>
+            </div>
+
+            <div>
+              <h3 class="text-lg font-semibold">{{ s.nombre_negocio }}</h3>
+
+              <div class="flex gap-2 text-xs font-medium">
+                <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-lg">ID: {{ s.id_solicitud }}</span>
+                <span class="px-2 py-0.5 bg-emerald-600/10 text-emerald-700 rounded-lg">Aprobada</span>
+              </div>
+
+              <p class="text-gray-700 text-sm mt-2">{{ s.monto_solicitado | currency:'COP' }}</p>
+            </div>
           </div>
 
-          <p class="text-gray-700 text-sm mt-2">{{ s.monto_solicitado | currency:'COP' }}</p>
+          <button (click)="verDetalle(s)"
+            class="px-5 py-2.5 mt-2 rounded-xl bg-white border border-indigo-200 text-indigo-600">
+            Ver detalles
+          </button>
         </div>
-      </div>
 
-      <button (click)="verDetalle(s)"
-        class="px-5 py-2.5 mt-2 rounded-xl bg-white border border-red-300 text-red-700">
-        Ver detalles
-      </button>
-    </div>
+        <!-- RECHAZADO -->
+        <div *ngIf="tab==='rechazado' && isRechazada(s)"
+             class="bg-white/80 backdrop-blur-sm border-red-200 rounded-2xl shadow-md hover:shadow-lg p-5">
 
-  </ng-container>
-</section>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
+              <i class="bi bi-x-circle text-red-700 text-xl"></i>
+            </div>
 
+            <div>
+              <h3 class="text-lg font-semibold">{{ s.nombre_negocio }}</h3>
 
-</section>
+              <div class="flex gap-2 text-xs font-medium">
+                <span class="px-2 py-0.5 bg-red-50 text-red-700 rounded-lg">ID: {{ s.id_solicitud }}</span>
+                <span class="px-2 py-0.5 bg-red-600/10 text-red-700 rounded-lg">Rechazada</span>
+              </div>
 
+              <p class="text-gray-700 text-sm mt-2">{{ s.monto_solicitado | currency:'COP' }}</p>
+            </div>
+          </div>
 
+          <button (click)="verDetalle(s)"
+            class="px-5 py-2.5 mt-2 rounded-xl bg-white border border-red-300 text-red-700">
+            Ver detalles
+          </button>
+        </div>
 
+      </ng-container>
+    </section>
+
+  </section>
 
   <!-- ========================================================
        MODAL DE DETALLES – PREMIUM COMPLETO
@@ -546,7 +538,7 @@
       </div>
 
       <!-- FOOTER -->
-      <div class="px-6 py-4 bg-gray-50 border-t flex justify-end gap-3">
+      <div class="px-6 py-4 bg-gray-50 border-t flex justify-end gap-3" *ngIf="mostrarAcciones()">
 
         <button (click)="denegar(detalle?.id_solicitud)"
           class="px-6 py-2.5 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 shadow">
@@ -562,26 +554,5 @@
     </div>
 
   </div>
-
-</div>
-<div class="flex justify-center items-center gap-3 mt-6" *ngIf="totalPages() > 1">
-
-  <button
-    (click)="prevPage()"
-    [disabled]="page === 1"
-    class="px-4 py-2 rounded-xl border bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-40">
-    <i class="bi bi-chevron-left"></i>
-  </button>
-
-  <span class="text-sm text-gray-700 font-medium">
-    Página {{ page }} de {{ totalPages() }}
-  </span>
-
-  <button
-    (click)="nextPage()"
-    [disabled]="page === totalPages()"
-    class="px-4 py-2 rounded-xl border bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-40">
-    <i class="bi bi-chevron-right"></i>
-  </button>
 
 </div>
