@@ -2,6 +2,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -18,12 +19,14 @@ export class SolicitudService {
     });
   }
 
-  getSolicitudById(id: number) {
-    return this.http.get(`${this.apiUrl}/solicitudes/${id}`, this.authService.getAuthHeaders());
+  getMisSolicitudes(): Promise<any> {
+    const getid = this.http.get(`${this.apiUrl}/solicitudes/mis-solicitudes`, this.authService.getAuthHeaders());
+    return lastValueFrom(getid);
   }
 
-  createSolicitud(data: any) {
-    return this.http.post(`${this.apiUrl}/solicitudes`, data, this.authService.getAuthHeaders());
+  createSolicitud(data: any): Promise<any> {
+    const soli = this.http.post(`${this.apiUrl}/solicitudes`, data, this.authService.getAuthHeaders());
+    return lastValueFrom(soli);
   }
 
   decidirSolicitud(id: number, decision: any) {

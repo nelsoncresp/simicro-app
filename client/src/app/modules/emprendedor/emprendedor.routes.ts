@@ -18,8 +18,8 @@ export const EMPRENDEDOR_ROUTES: Routes = [
         loadComponent: () => import('./components/solicitudes/solicitudes.component').then(m => m.SolicitudesComponent)
       },
       {
-        path: 'productos',
-        loadComponent: () => import('./components/productos/productos.component').then(m => m.ProductosComponent)
+        path: 'estado-cuenta',
+        loadComponent: () => import('./components/mi-estado-de-cuenta/mi-estado-de-cuenta.component').then(m => m.MiEstadoDeCuentaComponent)
       },
       {
         path: 'mi-emprendimiento',

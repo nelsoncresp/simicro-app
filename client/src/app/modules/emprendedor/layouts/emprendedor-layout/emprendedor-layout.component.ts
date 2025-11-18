@@ -10,7 +10,7 @@ import { AuthService } from '../../../../core/services/auth.service';
   template: `
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <!-- Header -->
-      <header class="bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg">
+      <header class="bg-gradient-to-r from-cyan-400 to-cyan-600 text-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between h-20 items-center">
             <div class="flex items-center space-x-4">
@@ -59,13 +59,13 @@ import { AuthService } from '../../../../core/services/auth.service';
               [routerLink]="nav.path"
               class="relative py-4 px-6 text-sm font-medium transition-all duration-200"
               [ngClass]="{
-                'text-green-600': isActive(nav.path),
-                'text-gray-600 hover:text-green-600': !isActive(nav.path)
+                'text-cyan-600': isActive(nav.path),
+                'text-gray-600 hover:text-cyan-600': !isActive(nav.path)
               }">
               <span class="flex items-center space-x-2">
                 <span>{{ nav.name }}</span>
               </span>
-              <span *ngIf="isActive(nav.path)" class="absolute bottom-0 left-0 right-0 h-1 bg-green-600 rounded-t-lg"></span>
+              <span *ngIf="isActive(nav.path)" class="absolute bottom-0 left-0 right-0 h-1 bg-cyan-600 rounded-t-lg"></span>
             </a>
           </div>
         </div>
@@ -82,11 +82,11 @@ export class EmprendedorLayoutComponent {
   currentUser = signal<any>(null);
 
   navigation = [
-    { name: 'Dashboard', path: '/emprendedor/dashboard' },
+    { name: 'Inicio', path: '/emprendedor/dashboard' },
     { name: 'Mi Perfil', path: '/emprendedor/perfil' },
+    { name: 'Mi Emprendimiento', path: '/emprendedor/mi-emprendimiento' },
     { name: 'Mis Solicitudes', path: '/emprendedor/solicitudes' },
-    { name: 'Mis Productos', path: '/emprendedor/productos' },
-    { name: 'Mis Emprendimientos', path: '/emprendedor/mi-emprendimiento' },
+    { name: 'Mi estado de cuenta', path: '/emprendedor/estado-cuenta' },
   ];
 
   constructor(

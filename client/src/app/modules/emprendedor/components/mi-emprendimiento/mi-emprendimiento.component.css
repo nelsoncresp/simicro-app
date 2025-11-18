@@ -13,3 +13,19 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
+
+  .cardView {
+    @apply bg-white p-8 rounded-xl shadow border border-gray-200;
+  }
+  .titleView {
+    @apply text-xl font-bold text-gray-900 flex items-center gap-2;
+  }
+  .itemView {
+    @apply space-y-1;
+  }
+  .labelView {
+    @apply text-sm text-gray-500;
+  }
+  .valueView {
+    @apply text-base font-medium text-gray-800;
+  }

@@ -1,142 +1,191 @@
-<div class="min-h-screen py-12 px-6">
-  <div class="max-w-5xl mx-auto">
+<div class="min-h-screen  py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-6xl mx-auto">
 
-  <!-- 🌼 HERO DE BIENVENIDA -->
-<div
-  class="rounded-3xl shadow-md p-10 border border-[#F3D9A4] mb-12 flex flex-col md:flex-row gap-10 items-center"
-  style="background: linear-gradient(135deg, #FFF8E6, #FFFDF8);"
->
+    <!-- 🌟 HERO DE BIENVENIDA -->
+    <div
+      class="bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-2xl shadow-xl p-8 md:p-12 mb-12 text-white relative overflow-hidden">
+      <!-- Elementos decorativos de fondo -->
+      <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+      <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
 
-  <div class="flex-1 space-y-5">
+      <div class="relative z-10 flex flex-col md:flex-row gap-8 items-center">
+        <div class="flex-1 space-y-6">
+          <!-- Icono y saludo -->
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+              <i class="bi bi-emoji-wink text-2xl"></i>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold leading-tight">
+              Bienvenido de vuelta,<br>
+              <span class="bg-white/20 px-2 rounded-lg">{{ nombreUsuario }}</span>
+            </h1>
+          </div>
 
-    <!-- 👋 Mano saludando -->
-    <div class="text-4xl">👋</div>
+          <!-- Información del emprendimiento -->
+          <div *ngIf="nombreEmprendimiento" class="flex items-center gap-2 text-cyan-100">
+            <i class="bi bi-building"></i>
+            <p class="text-lg">
+              Tu emprendimiento <span class="font-semibold text-white">{{ nombreEmprendimiento }}</span> sigue
+              avanzando.
+            </p>
+          </div>
 
-    <h1 class="text-4xl font-semibold text-gray-900 leading-snug">
-      Bienvenido de vuelta, {{ nombreUsuario }}
-    </h1>
+          <!-- Descripción -->
+          <p class="text-cyan-100 text-lg leading-relaxed max-w-2xl">
+            Estamos aquí para ayudarte a impulsar tu negocio con soluciones financieras claras y accesibles.
+            En este espacio podrás revisar tus notificaciones, avances y consejos prácticos para continuar
+            fortaleciendo tu camino como emprendedor.
+          </p>
+        </div>
 
-    <p *ngIf="nombreEmprendimiento" class="text-lg text-gray-700">
-      Tu emprendimiento <span class="text-[#0B8A43] font-semibold">{{ nombreEmprendimiento }}</span> sigue avanzando.
-    </p>
-
-    <p class="text-gray-600 text-base leading-relaxed max-w-lg">
-      Estamos aquí para ayudarte a impulsar tu negocio con soluciones financieras claras y accesibles.
-      En este espacio podrás revisar tus notificaciones, avances y consejos prácticos para continuar
-      fortaleciendo tu camino como emprendedor.
-    </p>
-  </div>
-
-  <!-- 🌱 Plantica única -->
-  <div class="text-8xl md:text-9xl">
-    🌱
-  </div>
-</div>
-
-
-<!-- CONTENEDOR GENERAL LUEGO DEL HERO -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-
-  <!-- 🪴 CONSEJOS - IZQUIERDA -->
-  <div class="lg:col-span-2 bg-white rounded-3xl shadow-md p-8 border border-[#F3D9A4]">
-
-    <div class="flex items-center gap-3 mb-8">
-      <i class="bi bi-lightbulb text-[#D18A00] text-3xl"></i>
-      <h2 class="text-2xl font-medium text-gray-900">Consejos para seguir creciendo</h2>
+        <!-- Icono decorativo -->
+        <div class="text-8xl md:text-9xl opacity-80">
+          <i class="bi bi-rocket-takeoff"></i>
+        </div>
+      </div>
     </div>
 
-    <div class="grid md:grid-cols-2 gap-6">
+    <!-- CONTENEDOR GENERAL -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-      <!-- Consejo 1 -->
-      <div class="p-6 bg-white border border-[#F3D9A4] rounded-2xl shadow-sm hover:shadow transition flex gap-4 items-start">
-        <i class="bi bi-graph-up text-[#0B8A43] text-3xl"></i>
-        <div class="space-y-2">
-          <p class="text-gray-900 text-lg">Organiza tu flujo financiero</p>
-          <p class="text-gray-700 text-sm leading-relaxed">
-            Conocer tus ingresos y gastos ayuda a tomar decisiones más seguras.
-          </p>
+      <!-- 💡 CONSEJOS - IZQUIERDA -->
+      <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-cyan-100">
+        <!-- Header -->
+        <div class="flex items-center gap-4 mb-8">
+          <div class="w-12 h-12 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-xl flex items-center justify-center">
+            <i class="bi bi-lightbulb text-white text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-cyan-800">Consejos para seguir creciendo</h2>
+            <p class="text-cyan-600 text-sm">Recomendaciones prácticas para tu negocio</p>
+          </div>
+        </div>
+
+        <!-- Grid de consejos -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Consejo 1 -->
+          <div
+            class="group p-6 bg-gradient-to-br from-white to-cyan-50 border border-cyan-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-cyan-300">
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="bi bi-graph-up-arrow text-green-600 text-xl"></i>
+              </div>
+              <div class="space-y-3">
+                <p class="text-gray-900 font-semibold text-lg">Organiza tu flujo financiero</p>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                  Conocer tus ingresos y gastos ayuda a tomar decisiones más seguras.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Consejo 2 -->
+          <div
+            class="group p-6 bg-gradient-to-br from-white to-cyan-50 border border-cyan-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-cyan-300">
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="bi bi-phone text-blue-600 text-xl"></i>
+              </div>
+              <div class="space-y-3">
+                <p class="text-gray-900 font-semibold text-lg">Refuerza tu presencia digital</p>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                  Una buena imagen genera confianza y atrae más clientes.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Consejo 3 -->
+          <div
+            class="group p-6 bg-gradient-to-br from-white to-cyan-50 border border-cyan-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-cyan-300">
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="bi bi-emoji-smile text-purple-600 text-xl"></i>
+              </div>
+              <div class="space-y-3">
+                <p class="text-gray-900 font-semibold text-lg">Cuida la experiencia del cliente</p>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                  Los detalles marcan la diferencia entre un cliente ocasional y uno fiel.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Consejo 4 -->
+          <div
+            class="group p-6 bg-gradient-to-br from-white to-cyan-50 border border-cyan-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-cyan-300">
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="bi bi-clock text-amber-600 text-xl"></i>
+              </div>
+              <div class="space-y-3">
+                <p class="text-gray-900 font-semibold text-lg">Organiza tu tiempo</p>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                  Unos minutos para planear tu día te ayudan a avanzar con calma.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Consejo 2 -->
-      <div class="p-6 bg-white border border-[#F3D9A4] rounded-2xl shadow-sm hover:shadow transition flex gap-4 items-start">
-        <i class="bi bi-phone text-[#0B8A43] text-3xl"></i>
-        <div class="space-y-2">
-          <p class="text-gray-900 text-lg">Refuerza tu presencia digital</p>
-          <p class="text-gray-700 text-sm leading-relaxed">
-            Una buena imagen genera confianza y atrae más clientes.
-          </p>
+      <!-- 🔔 NOTIFICACIONES - DERECHA -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-cyan-100 h-max sticky top-8">
+        <!-- Header -->
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-12 h-12 bg-gradient-to-r from-cyan-400 to-cyan-600 rounded-xl flex items-center justify-center">
+            <i class="bi bi-bell text-white text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-cyan-800">Notificaciones</h2>
+            <p class="text-cyan-600 text-sm">Mantente informado</p>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="text-center py-12">
+          <div class="w-16 h-16 border-4 border-cyan-200 border-t-cyan-600 rounded-full animate-spin mx-auto mb-4">
+          </div>
+          <p class="text-cyan-700 font-medium">Cargando notificaciones...</p>
+        </div>
+
+        <!-- Sin notificaciones -->
+        <div *ngIf="!loading && notificaciones.length === 0" class="text-center py-12 space-y-4">
+          <div class="w-20 h-20 bg-cyan-100 rounded-full flex items-center justify-center mx-auto">
+            <i class="bi bi-bell-slash text-cyan-600 text-3xl"></i>
+          </div>
+          <div class="space-y-2">
+            <p class="text-gray-700 font-medium">No tienes notificaciones pendientes</p>
+            <p class="text-gray-500 text-sm">
+              Te avisaremos cuando haya novedades sobre tu solicitud
+            </p>
+          </div>
+        </div>
+
+        <!-- Lista de notificaciones -->
+        <div *ngIf="!loading && notificaciones.length > 0" class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+          <div *ngFor="let n of notificaciones"
+            class="group p-5 bg-gradient-to-r from-white to-cyan-50 border border-cyan-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:border-cyan-300">
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 bg-cyan-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                <i class="bi bi-info-circle text-cyan-600 text-sm"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-gray-900 font-semibold text-sm truncate">{{ n.titulo || 'Notificación' }}</p>
+                <p class="text-gray-600 text-xs mt-2 leading-relaxed">
+                  {{ n.mensaje || n.descripcion }}
+                </p>
+                <div class="flex items-center gap-2 mt-3">
+                  <i class="bi bi-clock text-cyan-500 text-xs"></i>
+                  <p class="text-cyan-600 text-xs font-medium">
+                    {{ n.created_at | date:'short' }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Consejo 3 -->
-      <div class="p-6 bg-white border border-[#F3D9A4] rounded-2xl shadow-sm hover:shadow transition flex gap-4 items-start">
-        <i class="bi bi-emoji-smile text-[#0B8A43] text-3xl"></i>
-        <div class="space-y-2">
-          <p class="text-gray-900 text-lg">Cuida la experiencia del cliente</p>
-          <p class="text-gray-700 text-sm leading-relaxed">
-            Los detalles marcan la diferencia entre un cliente ocasional y uno fiel.
-          </p>
-        </div>
-      </div>
-
-      <!-- Consejo 4 -->
-      <div class="p-6 bg-white border border-[#F3D9A4] rounded-2xl shadow-sm hover:shadow transition flex gap-4 items-start">
-        <i class="bi bi-clock-history text-[#D18A00] text-3xl"></i>
-        <div class="space-y-2">
-          <p class="text-gray-900 text-lg">Organiza tu tiempo</p>
-          <p class="text-gray-700 text-sm leading-relaxed">
-            Unos minutos para planear tu día te ayudan a avanzar con calma.
-          </p>
-        </div>
-      </div>
-
     </div>
   </div>
-
-
-
-  <!-- 🔔 NOTIFICACIONES - DERECHA (SIDEBAR) -->
-  <div class="bg-white rounded-3xl shadow-md p-8 border border-[#F3D9A4] h-max sticky top-8">
-
-    <div class="flex items-center gap-3 mb-6">
-      <i class="bi bi-bell-fill text-[#0B8A43] text-2xl"></i>
-      <h2 class="text-xl font-medium text-gray-900">Notificaciones</h2>
-    </div>
-
-    <!-- Loading -->
-    <div *ngIf="loading" class="text-gray-600 text-center py-8">
-      Cargando notificaciones...
-    </div>
-
-    <!-- Sin notificaciones -->
-    <div *ngIf="!loading && notificaciones.length === 0" class="text-center py-8 space-y-3">
-      <i class="bi bi-bell-slash text-gray-500 text-5xl"></i>
-      <p class="text-gray-700 text-base">No tienes notificaciones pendientes.</p>
-      <p class="text-gray-500 text-xs">
-        Te avisaremos cuando haya novedades sobre tu solicitud.
-      </p>
-    </div>
-
-    <!-- Lista -->
-    <div *ngIf="!loading && notificaciones.length > 0" class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
-
-      <div
-        *ngFor="let n of notificaciones"
-        class="p-5 rounded-xl bg-white border border-[#F3D9A4] shadow-sm hover:shadow transition"
-      >
-        <p class="text-gray-900 text-sm font-medium">{{ n.titulo || 'Notificación' }}</p>
-        <p class="text-gray-700 text-xs mt-1">
-          {{ n.mensaje || n.descripcion }}
-        </p>
-        <p class="text-[10px] text-gray-500 mt-2">
-          {{ n.created_at | date:'short' }}
-        </p>
-      </div>
-
-    </div>
-  </div>
-
-</div>
-
 </div>

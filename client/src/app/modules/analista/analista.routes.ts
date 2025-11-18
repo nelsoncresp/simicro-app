@@ -7,15 +7,7 @@ export const ANALISTA_ROUTES: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent)
-      },
-      {
-        path: 'solicitudes',
-        loadComponent: () => import('./components/solicitudes/solicitudes.component').then(m => m.SolicitudesComponent)
-      },
-      {
-        path: 'evaluaciones',
-        loadComponent: () => import('./components/evaluaciones/evaluaciones.component').then(m => m.EvaluacionesComponent)
+        loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.AnalistaViewComponent)
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
