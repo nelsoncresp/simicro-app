@@ -64,6 +64,16 @@ export class UsuariosComponent implements OnInit {
   }
 
   eliminarUsuario(id: number) {
-    console.log("Eliminar user:", id);
+    const token = localStorage.getItem('token');
+
+    this.http.patch(`${this.apiUrl}/${id}/desactivar`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: () => {
+        console.log("Usuario desactivado:", id);
+        this.loadUsers();
+      },
+      error: (err) => console.error('Error desactivando usuario:', err)
+    });
   }
 }

@@ -7,7 +7,7 @@ export class Solicitud {
     const {
       id_emprendedor,
       monto_solicitado,
-      plazo_semanas,
+      plazo_meses,
       motivo_prestamo,
       estado = 'pendiente',
       calificacion_riesgo = null,
@@ -17,9 +17,9 @@ export class Solicitud {
 
     const [result] = await pool.execute(
       `INSERT INTO solicitudes 
-       (id_emprendedor, monto_solicitado, motivo_prestamo, plazo_semanas, estado, calificacion_riesgo, ratio_cuota_utilidad, motivo_decision)
+       (id_emprendedor, monto_solicitado, motivo_prestamo, plazo_meses, estado, calificacion_riesgo, ratio_cuota_utilidad, motivo_decision)
        VALUES (?, ?,?, ?, ?, ?, ?, ?)`,
-      [id_emprendedor, monto_solicitado, motivo_prestamo, plazo_semanas, estado, calificacion_riesgo, ratio_cuota_utilidad, motivo_decision]
+      [id_emprendedor, monto_solicitado, motivo_prestamo, plazo_meses, estado, calificacion_riesgo, ratio_cuota_utilidad, motivo_decision]
     );
 
     return this.findById(result.insertId);

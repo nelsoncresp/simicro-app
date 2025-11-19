@@ -33,7 +33,7 @@ export class SolicitudesComponent implements OnInit {
     this.solicitudForm = this.fb.group({
       monto_solicitado: ['', [Validators.required, Validators.min(1), Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
       motivo_prestamo: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
-      plazo_semanas: ['', [Validators.required, Validators.min(1), Validators.max(520), Validators.pattern(/^\d+$/)]]
+      plazo_meses: ['', [Validators.required, Validators.min(1), Validators.max(120), Validators.pattern(/^\d+$/)]]
     });
   }
 
@@ -64,7 +64,7 @@ export class SolicitudesComponent implements OnInit {
       const formData = {
         monto_solicitado: parseFloat(this.solicitudForm.value.monto_solicitado),
         motivo_prestamo: this.solicitudForm.value.motivo_prestamo,
-        plazo_semanas: parseInt(this.solicitudForm.value.plazo_semanas, 10)
+        plazo_meses: parseInt(this.solicitudForm.value.plazo_meses, 10)
       };
       console.log('Datos del formulario:', formData);
       try {
@@ -135,8 +135,8 @@ export class SolicitudesComponent implements OnInit {
     return this.solicitudForm.get('motivo_prestamo');
   }
 
-  get plazo_semanas() {
-    return this.solicitudForm.get('plazo_semanas');
+  get plazo_meses() {
+    return this.solicitudForm.get('plazo_meses');
   }
 
   resetForm(): void {

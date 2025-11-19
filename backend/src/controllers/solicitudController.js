@@ -11,11 +11,11 @@ export class SolicitudController {
   // Crear solicitud del usuario autenticado
   static async crearSolicitud(req, res) {
     try {
-      const { monto_solicitado, plazo_semanas, motivo_prestamo } = req.body;
+      const { monto_solicitado, plazo_meses, motivo_prestamo } = req.body;
       const id_usuario = req.user?.id_usuario;
       console.log('AQUIII:', motivo_prestamo)
       if (!id_usuario) return error(res, 'Usuario no autenticado', 401);
-      if (!monto_solicitado || !plazo_semanas || !motivo_prestamo)
+      if (!monto_solicitado || !plazo_meses || !motivo_prestamo)
         return error(res, 'Datos incompletos', 400);
 
       // Obtener emprendimiento asociado al usuario logueado
@@ -40,7 +40,7 @@ export class SolicitudController {
         const solicitud = await Solicitud.create({
           id_emprendedor,
           monto_solicitado,
-          plazo_semanas,
+          plazo_meses,
           motivo_prestamo,
           estado: 'rechazado',
           calificacion_riesgo: 'alto',
@@ -49,11 +49,15 @@ export class SolicitudController {
         return success(res, solicitud, 'Solicitud rechazada por antigüedad');
       }
 
-      // Calcular ratio y riesgo
-      const cuotaSemanal = monto_solicitado / plazo_semanas;
-      const ingresoMensual = Number(emprendimiento.ingresos_mensuales) || 0;
-      const ingresoDiario = ingresoMensual / 30;
-      const ratio = calcularRatio(ingresoDiario, cuotaSemanal);
+      // Calcular ratio y riesgo (cuota mensual vs utilidad neta)
+      // Incluir interés en el cálculo de la cuota
+      const tasaInteresAnual = 24; // 24% anual (mismo que en CreditoService)
+      const totalInteres = monto_solicitado * (tasaInteresAnual / 100) * (plazo_meses / 12);
+      const montoTotal = monto_solicitado + totalInteres;
+      const cuotaMensual = montoTotal / plazo_meses;
+      
+      const utilidadNeta = Number(emprendimiento.utilidad_neta) || 0;
+      const ratio = utilidadNeta > 0 ? (cuotaMensual / utilidadNeta) * 100 : 100;
 
       let estado = 'pre-aprobado';
       let riesgo = ratio < 25 ? 'bajo' : 'medio';
@@ -68,7 +72,7 @@ export class SolicitudController {
       const solicitud = await Solicitud.create({
         id_emprendedor,
         monto_solicitado,
-        plazo_semanas,
+        plazo_meses,
         motivo_prestamo,
         estado,
         calificacion_riesgo: riesgo,
@@ -177,7 +181,7 @@ export class SolicitudController {
           id_solicitud: id,
           monto_desembolsado: solicitud.monto_solicitado,
           tasa_interes: 2.0,
-          plazo_semanas: solicitud.plazo_semanas
+          plazo_meses: solicitud.plazo_meses
         };
 
         const nuevoCredito = await Credito.create(creditoData);
@@ -186,7 +190,7 @@ export class SolicitudController {
         await CreditoService.generarCuotas(
           nuevoCredito.id_credito,
           solicitud.monto_solicitado,
-          solicitud.plazo_semanas,
+          solicitud.plazo_meses,
           2.0
         );
 
@@ -200,7 +204,7 @@ export class SolicitudController {
           solicitud.nombre_emprendedor,
           solicitud.nombre_negocio,
           solicitud.monto_solicitado,
-          solicitud.plazo_semanas
+          solicitud.plazo_meses
         );
 
         success(res, 

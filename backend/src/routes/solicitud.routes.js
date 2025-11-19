@@ -25,15 +25,15 @@ router.use(authenticate);
  *             type: object
  *             required:
  *               - monto_solicitado
- *               - plazo_semanas
+ *               - plazo_meses
  *             properties:
  *               monto_solicitado:
  *                 type: number
  *                 format: float
  *                 description: Monto solicitado del crédito
- *               plazo_semanas:
+ *               plazo_meses:
  *                 type: integer
- *                 description: Plazo del crédito en semanas
+ *                 description: Plazo del crédito en meses
  *     responses:
  *       201:
  *         description: Solicitud creada exitosamente o evaluada (pre-aprobada/rechazada)

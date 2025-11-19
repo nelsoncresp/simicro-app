@@ -10,9 +10,9 @@ export class CreditEvaluationService {
 
     // 2. Calcular capacidad de pago
     const capacidadPago = this.calcularCapacidadPago(
-      emprendedorData.ingreso_neto_diario,
+      emprendedorData.utilidad_neta,
       solicitudData.monto_solicitado,
-      solicitudData.plazo_semanas
+      solicitudData.plazo_meses
     );
 
     if (!capacidadPago.aprobado) {
@@ -43,10 +43,9 @@ export class CreditEvaluationService {
   }
 
   // Calcular capacidad de pago (Ratio Cuota/Utilidad)
-  static calcularCapacidadPago(ingresoNetoDiario, montoSolicitado, plazoSemanas) {
-    const utilidadNetaSemanal = ingresoNetoDiario * 7;
-    const cuotaSemanal = montoSolicitado / plazoSemanas;
-    const ratio = (cuotaSemanal / utilidadNetaSemanal) * 100;
+  static calcularCapacidadPago(utilidadNeta, montoSolicitado, plazoMeses) {
+    const cuotaMensual = montoSolicitado / plazoMeses;
+    const ratio = utilidadNeta > 0 ? (cuotaMensual / utilidadNeta) * 100 : 100;
 
     const maxRatio = 40; // 40% máximo
 
@@ -63,7 +62,7 @@ export class CreditEvaluationService {
     return {
       aprobado: true,
       ratio: ratio,
-      cuotaSemanal: cuotaSemanal
+      cuotaMensual: cuotaMensual
     };
   }
 

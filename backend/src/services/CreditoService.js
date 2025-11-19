@@ -18,24 +18,36 @@ export class CreditoService {
   }
 
   /**
-   * Genera el calendario de cuotas
+   * Genera el calendario de cuotas con interés fijo
+   * Fórmula: Total = Monto + (Monto × Tasa Anual × Meses/12)
    */
-  static async generarCuotas(id_credito, monto, plazo_semanas, tasa_interes_anual) {
-    const tasaMensual = tasa_interes_anual / 12;
-    const numCuotas = Math.ceil(plazo_semanas / 4.33); // Convertir semanas a meses aprox
-
-    const cuotaMensual = this.calculateMonthlyPayment(monto, tasaMensual, numCuotas);
-    let saldoRestante = monto;
+  static async generarCuotas(id_credito, monto, plazo_meses, tasa_interes_anual) {
+    const numCuotas = plazo_meses;
+    
+    // Calcular interés total usando fórmula simple
+    const totalInteres = monto * (tasa_interes_anual / 100) * (plazo_meses / 12);
+    const montoTotal = monto + totalInteres;
+    
+    // Cuota mensual fija
+    const cuotaMensual = montoTotal / numCuotas;
+    
+    // Interés fijo por cuota (distribuido equitativamente)
+    const interesPorCuota = totalInteres / numCuotas;
+    
+    // Capital fijo por cuota
+    const capitalPorCuota = monto / numCuotas;
+    
     const cuotas = [];
-
     const hoy = new Date();
 
     for (let i = 1; i <= numCuotas; i++) {
       const fechaVencimiento = new Date(hoy);
       fechaVencimiento.setMonth(fechaVencimiento.getMonth() + i);
 
-      const interes = (saldoRestante * tasaMensual) / 100;
-      const capital = cuotaMensual - interes;
+      // Redondear a 2 decimales
+      const montoEsperado = Math.round(cuotaMensual * 100) / 100;
+      const capital = Math.round(capitalPorCuota * 100) / 100;
+      const interes = Math.round(interesPorCuota * 100) / 100;
 
       const [result] = await pool.execute(
         `INSERT INTO cuotas 
@@ -45,9 +57,9 @@ export class CreditoService {
           id_credito,
           i,
           fechaVencimiento.toISOString().split('T')[0],
-          Math.round(cuotaMensual * 100) / 100,
-          Math.round(capital * 100) / 100,
-          Math.round(interes * 100) / 100
+          montoEsperado,
+          capital,
+          interes
         ]
       );
 
@@ -55,12 +67,10 @@ export class CreditoService {
         id_cuota: result.insertId,
         numero_cuota: i,
         fecha_vencimiento: fechaVencimiento,
-        monto_esperado: Math.round(cuotaMensual * 100) / 100,
-        capital: Math.round(capital * 100) / 100,
-        interes: Math.round(interes * 100) / 100
+        monto_esperado: montoEsperado,
+        capital: capital,
+        interes: interes
       });
-
-      saldoRestante -= capital;
     }
 
     return cuotas;

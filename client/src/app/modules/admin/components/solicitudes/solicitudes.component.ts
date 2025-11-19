@@ -59,12 +59,34 @@ export class SolicitudesComponent implements OnInit {
     );
   }
 
-  editar(id: number) {
-    console.log("Editar solicitud: ", id);
+  aprobar(id: number) {
+    const token = localStorage.getItem('token');
+
+    this.http.patch(
+      `${this.apiUrl}/${id}/decision`,
+      { accion: 'aprobar' },
+      { headers: { Authorization: `Bearer ${token}` } }
+    ).subscribe({
+      next: () => {
+        this.loadSolicitudes();
+      },
+      error: (err) => console.error("Error aprobando solicitud:", err)
+    });
   }
 
-  eliminar(id: number) {
-    console.log("Eliminar solicitud: ", id);
+  denegar(id: number) {
+    const token = localStorage.getItem('token');
+
+    this.http.patch(
+      `${this.apiUrl}/${id}/decision`,
+      { accion: 'rechazar' },
+      { headers: { Authorization: `Bearer ${token}` } }
+    ).subscribe({
+      next: () => {
+        this.loadSolicitudes();
+      },
+      error: (err) => console.error("Error rechazando solicitud:", err)
+    });
   }
 
   getEstadoClass(estado: string) {

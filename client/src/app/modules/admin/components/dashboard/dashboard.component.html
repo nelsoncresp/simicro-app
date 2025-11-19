@@ -35,9 +35,9 @@
     </div>
 
     <div class="bg-white p-6 rounded-xl shadow hover:shadow-md transition border border-slate-100">
-      <p class="text-slate-500 text-sm">% Aprobación</p>
+      <p class="text-slate-500 text-sm">Cartera Activa</p>
       <h2 class="text-3xl font-bold text-indigo-500">
-        74%
+        {{ dashboardData.montoTotal | currency:'USD':'symbol':'1.0-0' }}
       </h2>
     </div>
 

@@ -23,7 +23,7 @@ export class Credito {
   static async findById(id) {
     const [rows] = await pool.execute(
       `SELECT c.*, 
-              s.id_emprendedor, s.plazo_semanas,
+              s.id_emprendedor, s.plazo_meses,
               e.nombre_emprendimiento, u.nombre, u.email
        FROM creditos c
        INNER JOIN solicitudes s ON c.id_solicitud = s.id_solicitud
@@ -47,7 +47,7 @@ export class Credito {
   // Obtener créditos activos de un emprendedor
   static async findByEmprendedor(id_emprendedor) {
     const [rows] = await pool.execute(
-      `SELECT c.*, s.plazo_semanas
+      `SELECT c.*, s.plazo_meses
        FROM creditos c
        INNER JOIN solicitudes s ON c.id_solicitud = s.id_solicitud
        WHERE s.id_emprendedor = ? AND c.estado IN ('activo', 'moroso')
@@ -93,7 +93,7 @@ export class Credito {
   // Obtener todos los créditos del usuario
   static async findByUsuario(id_usuario) {
     const [rows] = await pool.execute(
-      `SELECT c.*, e.nombre_emprendimiento, s.plazo_semanas
+      `SELECT c.*, e.nombre_emprendimiento, s.plazo_meses
        FROM creditos c
        INNER JOIN solicitudes s ON c.id_solicitud = s.id_solicitud
        INNER JOIN emprendimientos e ON s.id_emprendedor = e.id_emprendimiento
@@ -104,12 +104,11 @@ export class Credito {
     );
     return rows;
   }
+  
   static async findActive() {
-  const [rows] = await pool.execute(
-    `SELECT * FROM creditos WHERE estado = 'activo'`
-  );
-  return rows;
-}
-
-
+    const [rows] = await pool.execute(
+      `SELECT * FROM creditos WHERE estado = 'activo'`
+    );
+    return rows;
+  }
 }
